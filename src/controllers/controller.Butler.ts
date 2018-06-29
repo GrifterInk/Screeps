@@ -92,6 +92,16 @@ export class Butler {
         }
     }
 
+    CurrentButlersCount() {
+        let currentButlers: number = 0;
+        var butlers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Butler);
+
+        if (butlers.length) {
+            currentButlers = butlers.length;
+        }
+
+        return currentButlers;
+    }
 
     private getCurrentButlersWorth() {
         let currentButlerWorth: number = 0;
