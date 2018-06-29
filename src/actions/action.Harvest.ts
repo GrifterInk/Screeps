@@ -25,8 +25,20 @@ export class actionHarvest {
         (creep.memory as CreepMemory).CurrentAction = Actions.Harvest;
 
         var sources = creep.room.find(FIND_SOURCES);
+        this.determineCurrentEnergySource(creep, sources.length);
+
+        //Logic to keep creeps from attempting to get energy from a source they cannot reach, includes mechanism to keep from infinite looping
+        if (creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource].pos) == ERR_NO_PATH){
+            this.determineCurrentEnergySource(creep, sources.length);
+        }
+        else if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
+        }
+    }
+
+    private determineCurrentEnergySource(creep: Creep, numberOfSources: number){
         if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
-            var randomSourceID = Math.floor(Math.random() * sources.length);
+            var randomSourceID = Math.floor(Math.random() * numberOfSources);
 
             //Weighting source to 0 because it has more ports open
             //console.log("Random Source ID: " + randomSourceID + " Source Length: " + sources.length + 3);
@@ -39,10 +51,6 @@ export class actionHarvest {
 
             (creep.memory as CreepMemory).CurrentEnergySource = randomSourceID;
             //console.log("Current Energy Source: " + (creep.memory as CreepMemory).CurrentEnergySource);
-        }
-
-        if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
         }
     }
 };
