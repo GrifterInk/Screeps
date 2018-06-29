@@ -92,9 +92,9 @@ export class Upgrader {
 
     private getCurrentUpgradersWorth() {
         let currentUpgraderWorth: number = 0;
-        var Upgraders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Upgrader);
+        var upgraders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Upgrader);
 
-        Upgraders.forEach(creep => {
+        upgraders.forEach(creep => {
             if ((creep.memory as CreepMemory).CurrentWorth) {
                 currentUpgraderWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
             }
