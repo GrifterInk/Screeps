@@ -29,7 +29,9 @@ export class actionHarvest {
 
         //Logic to keep creeps from attempting to get energy from a source they cannot reach, includes mechanism to keep from infinite looping
         if (creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource].pos) == ERR_NO_PATH){
+            console.log("Desired Source [" + (creep.memory as CreepMemory).CurrentEnergySource + "] is unable to be reached!  Determining new Energy Source");
             this.determineCurrentEnergySource(creep, sources.length);
+            console.log("New Energy Source: [" + (creep.memory as CreepMemory).CurrentEnergySource + "]");
         }
         else if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
             creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
