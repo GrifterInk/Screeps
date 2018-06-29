@@ -64,7 +64,7 @@ export class actionBuild {
                 return constructionSite.structureType == STRUCTURE_ROAD
             }
         });
-        if(constructionSitesPrimary.length){
+        if(constructionSitesTertiary.length){
             return constructionSitesTertiary;
         }
 
