@@ -130,19 +130,19 @@ export class Butler {
                 return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
             }
         });
-        let containersAndStorage = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let labs = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity;
+                return structure.structureType == STRUCTURE_LAB && structure.energy < structure.energyCapacity;
             }
         });
 
         spawnsAndExtensions.forEach(structure => {
-            currentButlerNeed += 2;
+            currentButlerNeed += 3;
         });
         towers.forEach(structure => {
-            currentButlerNeed += 4;
+            currentButlerNeed += 5;
         });
-        containersAndStorage.forEach(structure => {
+        labs.forEach(structure => {
             currentButlerNeed + 8;
         });
 
