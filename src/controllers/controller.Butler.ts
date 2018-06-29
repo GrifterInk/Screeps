@@ -119,9 +119,10 @@ export class Butler {
     private getCurrentButlersNeed(spawnPoint: string) {
         let currentButlerNeed: number = 1; // We should always need 1 butler at all times, so start with 1 just to be sure!
 
-        let spawns = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let spawnsAndExtensions = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_SPAWN && structure.energy < structure.energyCapacity;
+                return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION)
+                    && structure.energy < structure.energyCapacity;
             }
         });
         let towers = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
@@ -129,19 +130,19 @@ export class Butler {
                 return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
             }
         });
-        let extensions = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let containersAndStorage = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return structure.structureType == STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity;
             }
         });
 
-        spawns.forEach(spawn => {
+        spawnsAndExtensions.forEach(structure => {
             currentButlerNeed += 2;
         });
-        towers.forEach(tower => {
+        towers.forEach(structure => {
             currentButlerNeed += 4;
         });
-        extensions.forEach(extension => {
+        containersAndStorage.forEach(structure => {
             currentButlerNeed + 8;
         });
 

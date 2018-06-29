@@ -1,14 +1,14 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
-import { Actions} from "constants/enum.Actions";
-import { PathStrokes} from "constants/enum.PathStrokes";
+import { Actions } from "constants/enum.Actions";
+import { PathStrokes } from "constants/enum.PathStrokes";
 
 export class actionSupplyEnergy {
     constructor() {
     }
 
-    IsNecessary(creep: Creep){
+    IsNecessary(creep: Creep) {
         var targets = this.getTargets(creep);
-        if (targets.length > 0) {
+        if (targets && targets.length > 0) {
             return true;
         }
 
@@ -17,7 +17,7 @@ export class actionSupplyEnergy {
 
     Execute(creep: Creep) {
         var targets = this.getTargets(creep);
-        if (targets.length > 0) {
+        if (targets && targets.length > 0) {
             creep.say(Actions.SupplyEnergy);
             (creep.memory as CreepMemory).CurrentAction = Actions.SupplyEnergy;
 
@@ -27,13 +27,37 @@ export class actionSupplyEnergy {
         }
     }
 
-    private getTargets(creep: Creep){
-        return creep.room.find(FIND_STRUCTURES, {
+    private getTargets(creep: Creep) {
+        var primaryStructureTarget = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return (structure.structureType == STRUCTURE_EXTENSION ||
-                    structure.structureType == STRUCTURE_SPAWN ||
-                    structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
+                return structure.structureType == STRUCTURE_TOWER
+                    && structure.energy < structure.energyCapacity;
             }
         });
+        if (primaryStructureTarget.length) {
+            return primaryStructureTarget;
+        }
+
+        var secondaryStructureTarget = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_EXTENSION
+                    && structure.energy < structure.energyCapacity;
+            }
+        });
+        if (secondaryStructureTarget.length) {
+            return secondaryStructureTarget;
+        }
+
+        var tertiaryStructureTarget = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_SPAWN
+                    && structure.energy < structure.energyCapacity;
+            }
+        });
+        if (tertiaryStructureTarget.length) {
+            return tertiaryStructureTarget;
+        }
+
+        return undefined;
     }
 };
