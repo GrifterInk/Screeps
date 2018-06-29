@@ -2,6 +2,7 @@ import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Butler } from "controllers/controller.Butler";
 import { Roles } from "constants/enum.Roles";
 import { Upgrader } from "controllers/controller.Upgrader";
+import { Builder } from "controllers/controller.Builder";
 
 export class programMapActions {
     constructor() {
@@ -19,6 +20,11 @@ export class programMapActions {
             if ((creep.memory as CreepMemory).Role == Roles.Upgrader) {
                 let upgrader: Upgrader = new Upgrader();
                 upgrader.Act(creep);
+            }
+
+            if ((creep.memory as CreepMemory).Role == Roles.Builder) {
+                let builder: Builder = new Builder();
+                builder.Act(creep);
             }
         }
     }
