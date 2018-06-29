@@ -22,9 +22,9 @@ export class actionBuild {
     }
 
     Execute(creep: Creep) {
-        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+        var targets = this.getBuildTarget(creep);
 
-        if (targets.length) {
+        if (targets && targets.length) {
             creep.say(Actions.Build);
             (creep.memory as CreepMemory).CurrentAction = Actions.Build;
 
@@ -33,5 +33,38 @@ export class actionBuild {
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.Build } });
             }
         }
+    }
+
+    private getBuildTarget(creep: Creep){
+        let constructionSitesPrimary = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_SPAWN
+                || constructionSite.structureType == STRUCTURE_TOWER
+                || constructionSite.structureType == STRUCTURE_EXTENSION
+            }
+        });
+        if(constructionSitesPrimary.length){
+            return constructionSitesPrimary;
+        }
+        let constructionSitesSecondary = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_ROAD
+                || constructionSite.structureType == STRUCTURE_WALL
+            }
+        });
+        if(constructionSitesSecondary.length){
+            return constructionSitesSecondary;
+        }
+        let constructionSitesTertiary = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_LAB
+                || constructionSite.structureType == STRUCTURE_CONTAINER
+            }
+        });
+        if(constructionSitesPrimary.length){
+            return constructionSitesTertiary;
+        }
+
+        return undefined;
     }
 };

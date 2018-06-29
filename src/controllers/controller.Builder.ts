@@ -124,7 +124,7 @@ export class Builder {
         });
 
         constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
-            currentBuilderNeed += 2;
+            currentBuilderNeed += 4;
         });
         constructionSitesSimple.forEach(constructionSiteSimple => {
             currentBuilderNeed += 1;
