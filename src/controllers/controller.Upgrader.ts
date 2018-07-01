@@ -5,6 +5,7 @@ import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { UpgraderAttributes } from "attributes/class.UpgraderAttributes";
 import { CreepSizes } from "constants/enum.CreepSizes";
+import { Builder } from "./controller.Builder";
 
 export class Upgrader {
     UpgraderAttributes: UpgraderAttributes = new UpgraderAttributes();
@@ -14,7 +15,7 @@ export class Upgrader {
 
     NeedToSpawn(spawnPoint: string) {
         let currentUpgraderWorth: number = this.getCurrentUpgradersWorth();
-        let currentUpgraderNeed: number = this.getCurrentUpgradersNeed(spawnPoint);
+        let currentUpgraderNeed: number = this.getCurrentUpgradersNeed(spawnPoint, currentUpgraderWorth);
 
         //console.log("Current Upgrader Need: " + currentUpgraderNeed + " / Current Upgrader Worth: " + currentUpgraderWorth);
         if (currentUpgraderNeed > currentUpgraderWorth) {
@@ -89,6 +90,17 @@ export class Upgrader {
         }
     }
 
+    CurrentUpgradersCount() {
+        let currentUpgraders: number = 0;
+        var upgraders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Upgrader);
+
+        if (upgraders.length) {
+            currentUpgraders = upgraders.length;
+        }
+
+        return currentUpgraders;
+    }
+
 
     private getCurrentUpgradersWorth() {
         let currentUpgraderWorth: number = 0;
@@ -103,17 +115,21 @@ export class Upgrader {
         return currentUpgraderWorth;
     }
 
-    private getCurrentUpgradersNeed(spawnPoint: string) {
+    private getCurrentUpgradersNeed(spawnPoint: string, currentUpgraderWorth: number) {
         let currentUpgraderNeed: number = 1; // We should always need 1 Upgrader at all times, so start with 1 just to be sure!
+        let builder: Builder = new Builder();
 
-        if (Game.spawns[spawnPoint].room.controller) {
+        //Want to really push upgrading, but not at the expense of not being able to do anything else
+        //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than upgraders
+        //Remember that as coded, we will still say we need 1 upgrader as higher priority than any lower priority roles
+        if(!builder.NeedToSpawn(spawnPoint) || builder.CurrentBuildersCount() > 0){
             let currentRoomControllerLevel = (Game.spawns[spawnPoint].room.controller as StructureController).level;
 
             if (currentRoomControllerLevel < 4) {
-                currentUpgraderNeed = currentRoomControllerLevel + 1;
+                currentUpgraderNeed = currentRoomControllerLevel + 4;
             }
             else if (currentRoomControllerLevel < 8) {
-                currentUpgraderNeed = currentRoomControllerLevel + 3;
+                currentUpgraderNeed = currentRoomControllerLevel + 8;
             }
             else if (currentRoomControllerLevel === 8) {
                 currentUpgraderNeed = 1; //We only need 1 upgrader at level 8, because we just want to prevent the controller from degrading!

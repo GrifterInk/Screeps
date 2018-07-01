@@ -92,6 +92,16 @@ export class Butler {
         }
     }
 
+    CurrentButlersCount() {
+        let currentButlers: number = 0;
+        var butlers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Butler);
+
+        if (butlers.length) {
+            currentButlers = butlers.length;
+        }
+
+        return currentButlers;
+    }
 
     private getCurrentButlersWorth() {
         let currentButlerWorth: number = 0;
@@ -109,9 +119,10 @@ export class Butler {
     private getCurrentButlersNeed(spawnPoint: string) {
         let currentButlerNeed: number = 1; // We should always need 1 butler at all times, so start with 1 just to be sure!
 
-        let spawns = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let spawnsAndExtensions = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_SPAWN && structure.energy < structure.energyCapacity;
+                return (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION)
+                    && structure.energy < structure.energyCapacity;
             }
         });
         let towers = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
@@ -119,19 +130,19 @@ export class Butler {
                 return structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity;
             }
         });
-        let extensions = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let labs = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_EXTENSION && structure.energy < structure.energyCapacity;
+                return structure.structureType == STRUCTURE_LAB && structure.energy < structure.energyCapacity;
             }
         });
 
-        spawns.forEach(spawn => {
-            currentButlerNeed += 2;
+        spawnsAndExtensions.forEach(structure => {
+            currentButlerNeed += 3;
         });
-        towers.forEach(tower => {
-            currentButlerNeed += 4;
+        towers.forEach(structure => {
+            currentButlerNeed += 5;
         });
-        extensions.forEach(extension => {
+        labs.forEach(structure => {
             currentButlerNeed + 8;
         });
 

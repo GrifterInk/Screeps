@@ -91,6 +91,18 @@ export class Builder {
         }
     }
 
+    CurrentBuildersCount() {
+        let currentBuilders: number = 0;
+        var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
+
+        if (builders.length) {
+            currentBuilders = builders.length;
+        }
+
+        return currentBuilders;
+    }
+
+
     private getCurrentBuildersWorth() {
         let currentBuilderWorth: number = 0;
         var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
@@ -110,21 +122,21 @@ export class Builder {
         let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
                 return constructionSite.structureType == STRUCTURE_SPAWN
-                || constructionSite.structureType == STRUCTURE_TOWER
-                || constructionSite.structureType == STRUCTURE_EXTENSION
-                || constructionSite.structureType == STRUCTURE_LAB
-                || constructionSite.structureType == STRUCTURE_CONTAINER
+                    || constructionSite.structureType == STRUCTURE_TOWER
+                    || constructionSite.structureType == STRUCTURE_EXTENSION
+                    || constructionSite.structureType == STRUCTURE_LAB
+                    || constructionSite.structureType == STRUCTURE_CONTAINER
             }
         });
         let constructionSitesSimple = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
                 return constructionSite.structureType == STRUCTURE_ROAD
-                || constructionSite.structureType == STRUCTURE_WALL
+                    || constructionSite.structureType == STRUCTURE_WALL
             }
         });
 
         constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
-            currentBuilderNeed += 2;
+            currentBuilderNeed += 4;
         });
         constructionSitesSimple.forEach(constructionSiteSimple => {
             currentBuilderNeed += 1;
