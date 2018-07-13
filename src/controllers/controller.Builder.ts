@@ -1,10 +1,14 @@
-import { actionUpgrade } from "actions/action.Upgrade";
 import { Roles } from "constants/enum.Roles";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { BuilderAttributes } from "attributes/class.BuilderAttributes";
 import { CreepSizes } from "constants/enum.CreepSizes";
 import { actionBuild } from "actions/action.Build";
+import { actionRepairTower } from "actions/action.RepairTower";
+import { actionRepairSpawn } from "actions/action.RepairSpawn";
+import { actionRepairExtension } from "actions/action.RepairExtension";
+import { actionRepairRoad } from "actions/action.RepairRoad";
+import { actionRepairWall } from "actions/action.RepairWall";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -79,6 +83,11 @@ export class Builder {
         //Builder Actions Priority should be: Harvest / Build / Repair Non-Road, Non-Wall Structures / Repair Roads
         let build: actionBuild = new actionBuild();
         let harvest: actionHarvest = new actionHarvest();
+        let repairTower: actionRepairTower = new actionRepairTower();
+        let repairSpawn: actionRepairSpawn = new actionRepairSpawn();
+        let repairExtension: actionRepairExtension = new actionRepairExtension();
+        let repairRoad: actionRepairRoad = new actionRepairRoad();
+        let repairWall: actionRepairWall = new actionRepairWall();
 
         if (harvest.IsNecessary(creep)) {
             harvest.Execute(creep);
@@ -87,7 +96,22 @@ export class Builder {
             build.Execute(creep);
         }
         else {
-            //TODO: Must add non-Primary Functions for repair!
+            //Fallback to repairs
+            if (repairTower.IsNecessary(creep)) {
+                repairTower.Execute(creep);
+            }
+            else if (repairSpawn.IsNecessary(creep)) {
+                repairSpawn.Execute(creep);
+            }
+            else if (repairExtension.IsNecessary(creep)) {
+                repairExtension.Execute(creep);
+            }
+            else if (repairRoad.IsNecessary(creep)) {
+                repairRoad.Execute(creep);
+            }
+            else if (repairWall.IsNecessary(creep)) {
+                repairWall.Execute(creep);
+            }
         }
     }
 

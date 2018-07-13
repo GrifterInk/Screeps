@@ -1,24 +1,22 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
-import { Actions} from "constants/enum.Actions";
-import { PathStrokes} from "constants/enum.PathStrokes";
+import { Actions } from "constants/enum.Actions";
+import { PathStrokes } from "constants/enum.PathStrokes";
 
 export class actionBuild {
     constructor() {
     }
 
-    IsNecessary(creep: Creep){
+    IsNecessary(creep: Creep) {
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
 
         if (targets.length) {
             //console.log("Need to Build");
             return true;
         }
-        else if(creep.carry.energy == 0 || (creep.memory as CreepMemory).CurrentAction == Actions.Harvest) {
+        else {
             //console.log("No Need to Build");
             return false;
         }
-
-        return false;
     }
 
     Execute(creep: Creep) {
@@ -35,7 +33,7 @@ export class actionBuild {
         }
     }
 
-    private getBuildTarget(creep: Creep){
+    private getBuildTarget(creep: Creep) {
         //quaternary, quinary, senary, septenary, octonary, nonary, and denary
 
         //Walls get built first, because they are defensive and extremely fast to build
@@ -44,7 +42,7 @@ export class actionBuild {
                 return constructionSite.structureType == STRUCTURE_WALL
             }
         });
-        if(constructionSitesPrimary.length){
+        if (constructionSitesPrimary.length) {
             return constructionSitesPrimary;
         }
 
@@ -54,7 +52,7 @@ export class actionBuild {
                 return constructionSite.structureType == STRUCTURE_TOWER
             }
         });
-        if(constructionSitesSecondary.length){
+        if (constructionSitesSecondary.length) {
             return constructionSitesSecondary;
         }
 
@@ -64,7 +62,7 @@ export class actionBuild {
                 return constructionSite.structureType == STRUCTURE_ROAD
             }
         });
-        if(constructionSitesTertiary.length){
+        if (constructionSitesTertiary.length) {
             return constructionSitesTertiary;
         }
 
@@ -72,10 +70,10 @@ export class actionBuild {
         let constructionSitesQuaternary = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
                 return constructionSite.structureType == STRUCTURE_SPAWN
-                || constructionSite.structureType == STRUCTURE_EXTENSION
+                    || constructionSite.structureType == STRUCTURE_EXTENSION
             }
         });
-        if(constructionSitesQuaternary.length){
+        if (constructionSitesQuaternary.length) {
             return constructionSitesQuaternary;
         }
 
@@ -83,13 +81,13 @@ export class actionBuild {
         let constructionSitesQuinary = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
                 return constructionSite.structureType != STRUCTURE_WALL
-                && constructionSite.structureType != STRUCTURE_TOWER
-                && constructionSite.structureType != STRUCTURE_ROAD
-                && constructionSite.structureType != STRUCTURE_SPAWN
-                && constructionSite.structureType != STRUCTURE_EXTENSION
+                    && constructionSite.structureType != STRUCTURE_TOWER
+                    && constructionSite.structureType != STRUCTURE_ROAD
+                    && constructionSite.structureType != STRUCTURE_SPAWN
+                    && constructionSite.structureType != STRUCTURE_EXTENSION
             }
         });
-        if(constructionSitesQuinary.length){
+        if (constructionSitesQuinary.length) {
             return constructionSitesQuinary;
         }
 
