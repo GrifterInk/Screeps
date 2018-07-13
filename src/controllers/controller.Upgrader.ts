@@ -6,6 +6,8 @@ import { actionHarvest } from "actions/action.Harvest";
 import { UpgraderAttributes } from "attributes/class.UpgraderAttributes";
 import { CreepSizes } from "constants/enum.CreepSizes";
 import { Builder } from "./controller.Builder";
+import { Paver } from "./controller.Paver";
+import { Mason } from "./controller.Mason";
 
 export class Upgrader {
     UpgraderAttributes: UpgraderAttributes = new UpgraderAttributes();
@@ -118,11 +120,15 @@ export class Upgrader {
     private getCurrentUpgradersNeed(spawnPoint: string, currentUpgraderWorth: number) {
         let currentUpgraderNeed: number = 1; // We should always need 1 Upgrader at all times, so start with 1 just to be sure!
         let builder: Builder = new Builder();
+        let paver: Paver = new Paver();
+        let mason: Mason = new Mason();
 
         //Want to really push upgrading, but not at the expense of not being able to do anything else
         //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than upgraders
         //Remember that as coded, we will still say we need 1 upgrader as higher priority than any lower priority roles
-        if(!builder.NeedToSpawn(spawnPoint) || builder.CurrentBuildersCount() > 0){
+        if (!builder.NeedToSpawn(spawnPoint) || builder.CurrentBuildersCount() > 0
+            || !paver.NeedToSpawn(spawnPoint) || paver.CurrentPaversCount() > 0
+            || !mason.NeedToSpawn(spawnPoint) || mason.CurrentMasonsCount() > 0) {
             let currentRoomControllerLevel = (Game.spawns[spawnPoint].room.controller as StructureController).level;
 
             if (currentRoomControllerLevel < 4) {

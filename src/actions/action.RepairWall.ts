@@ -24,19 +24,71 @@ export class actionRepairWall {
     }
 
     Execute(creep: Creep) {
-        var structuresToRepair = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax;
-            }
-        });
+        var targets = this.getRepairTarget(creep);
 
-        if (structuresToRepair.length) {
+        if (targets && targets.length) {
             creep.say(Actions.RepairWall);
             (creep.memory as CreepMemory).CurrentAction = Actions.Build;
 
-            if (creep.repair(structuresToRepair[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(structuresToRepair[0], { visualizePathStyle: { stroke: PathStrokes.Repair } });
+            if (creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.Repair } });
             }
         }
+    }
+
+    private getRepairTarget(creep: Creep) {
+        //quaternary, quinary, senary, septenary, octonary, nonary, and denary
+
+        //Primary are walls <= 1000HP
+        let wallsToRepairPrimary = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax && structure.hits <= 1000;
+            }
+        });
+        if (wallsToRepairPrimary.length) {
+            return wallsToRepairPrimary;
+        }
+
+        //Secondary are walls <= 100K HP
+        let wallsToRepairSecondary = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax && structure.hits <= 100000;
+            }
+        });
+        if (wallsToRepairSecondary.length) {
+            return wallsToRepairSecondary;
+        }
+
+        //Tertiary are walls <= 1 Million HP
+        let wallsToRepairTertiary = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax && structure.hits <= 1000000;
+            }
+        });
+        if (wallsToRepairTertiary.length) {
+            return wallsToRepairTertiary;
+        }
+
+        //Quaternary are walls <= 1 Million HP
+        let wallsToRepairQuaternary = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax && structure.hits <= 1000000;
+            }
+        });
+        if (wallsToRepairQuaternary.length) {
+            return wallsToRepairQuaternary;
+        }
+
+        //Any other wall with missing HP is Quinary
+        let wallsToRepairQuinary = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax && structure.hits <= 1000000;
+            }
+        });
+        if (wallsToRepairQuinary.length) {
+            return wallsToRepairQuinary;
+        }
+
+        return undefined;
     }
 };

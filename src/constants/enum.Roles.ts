@@ -9,6 +9,7 @@ export enum Roles {
     Archer = "Archer",
     Marine = "Marine",
     Sniper = "Sniper",
+    SiegeCraft = "SiegeCraft",
     Doctor = "Doctor",
     Colonist = "Colonist"
 };

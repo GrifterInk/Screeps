@@ -3,6 +3,8 @@ import { Butler } from "controllers/controller.Butler";
 import { Roles } from "constants/enum.Roles";
 import { Upgrader } from "controllers/controller.Upgrader";
 import { Builder } from "controllers/controller.Builder";
+import { Paver } from "controllers/controller.Paver";
+import { Mason } from "controllers/controller.Mason";
 
 export class programMapActions {
     constructor() {
@@ -25,6 +27,16 @@ export class programMapActions {
             if ((creep.memory as CreepMemory).Role == Roles.Builder) {
                 let builder: Builder = new Builder();
                 builder.Act(creep);
+            }
+
+            if ((creep.memory as CreepMemory).Role == Roles.Paver) {
+                let paver: Paver = new Paver();
+                paver.Act(creep);
+            }
+
+            if ((creep.memory as CreepMemory).Role == Roles.Mason) {
+                let mason: Mason = new Mason();
+                mason.Act(creep);
             }
         }
     }

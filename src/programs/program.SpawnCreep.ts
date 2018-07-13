@@ -4,6 +4,8 @@ import { SpawnPoints } from "constants/array.SpawnPoints";
 import { Roles } from "constants/enum.Roles";
 import { Upgrader } from "controllers/controller.Upgrader";
 import { Builder } from "controllers/controller.Builder";
+import { Paver } from "controllers/controller.Paver";
+import { Mason } from "controllers/controller.Mason";
 
 export class programSpawnCreep {
     constructor() {
@@ -16,6 +18,8 @@ export class programSpawnCreep {
             let butler: Butler = new Butler();
             let upgrader: Upgrader = new Upgrader();
             let builder: Builder = new Builder();
+            let paver: Paver = new Paver();
+            let mason: Mason = new Mason();
 
             if (butler.NeedToSpawn(spawnPoint)) {
                 butler.Spawn(spawnPoint);
@@ -25,6 +29,12 @@ export class programSpawnCreep {
             }
             else if (builder.NeedToSpawn(spawnPoint)){
                 builder.Spawn(spawnPoint);
+            }
+            else if (paver.NeedToSpawn(spawnPoint)){
+                paver.Spawn(spawnPoint);
+            }
+            else if (mason.NeedToSpawn(spawnPoint)){
+                mason.Spawn(spawnPoint);
             }
 
             if (Game.spawns[spawnPoint].spawning) {
