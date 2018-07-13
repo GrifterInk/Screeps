@@ -1,18 +1,19 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
-import { Actions} from "constants/enum.Actions";
-import { PathStrokes} from "constants/enum.PathStrokes";
+import { Actions } from "constants/enum.Actions";
+import { PathStrokes } from "constants/enum.PathStrokes";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
 
 export class actionHarvest {
     constructor() {
     }
 
-    IsNecessary(creep: Creep){
-        if (creep.carry.energy == creep.carryCapacity){
+    IsNecessary(creep: Creep) {
+        if (creep.carry.energy == creep.carryCapacity) {
             (creep.memory as CreepMemory).CurrentEnergySource = -1;
             //console.log("No Need to Harvest");
             return false;
         }
-        else if(creep.carry.energy == 0 || (creep.memory as CreepMemory).CurrentAction == Actions.Harvest) {
+        else if (creep.carry.energy == 0 || (creep.memory as CreepMemory).CurrentAction == Actions.Harvest) {
             //console.log("Need to Harvest");
             return true;
         }
@@ -28,7 +29,7 @@ export class actionHarvest {
         this.determineCurrentEnergySource(creep, sources.length);
 
         //Logic to keep creeps from attempting to get energy from a source they cannot reach, includes mechanism to keep from infinite looping
-        if (creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource].pos) == ERR_NO_PATH){
+        if (creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource].pos) == ERR_NO_PATH) {
             //console.log("Desired Source [" + (creep.memory as CreepMemory).CurrentEnergySource + "] is unable to be reached!  Determining new Energy Source");
             (creep.memory as CreepMemory).CurrentEnergySource = -1;
             this.determineCurrentEnergySource(creep, sources.length);
@@ -39,21 +40,26 @@ export class actionHarvest {
         }
     }
 
-    private determineCurrentEnergySource(creep: Creep, numberOfSources: number){
-        if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
-            var randomSourceID = Math.floor(Math.random() * numberOfSources);
+    private determineCurrentEnergySource(creep: Creep, numberOfSources: number) {
+        if ((creep.room.memory as RoomMemory).CurrentEnergySource == -1) { //Room is currently set to pull randomly from its energy sources
+            if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
+                var randomSourceID = Math.floor(Math.random() * numberOfSources);
 
-            //Weighting source to 0 because it has more ports open
-            //console.log("Random Source ID: " + randomSourceID + " Source Length: " + sources.length + 3);
-            // if (randomSourceID > 0) {
-            //     randomSourceID = 0;
-            // }
-            // else {
-            //     randomSourceID = 1;
-            // }
+                //Weighting source to 0 because it has more ports open
+                //console.log("Random Source ID: " + randomSourceID + " Source Length: " + sources.length + 3);
+                // if (randomSourceID > 0) {
+                //     randomSourceID = 0;
+                // }
+                // else {
+                //     randomSourceID = 1;
+                // }
 
-            (creep.memory as CreepMemory).CurrentEnergySource = randomSourceID;
-            //console.log("Current Energy Source: " + (creep.memory as CreepMemory).CurrentEnergySource);
+                (creep.memory as CreepMemory).CurrentEnergySource = randomSourceID;
+                //console.log("Current Energy Source: " + (creep.memory as CreepMemory).CurrentEnergySource);
+            }
+        }
+        else { //Room is set to use a specific energy source via Memory
+            (creep.memory as CreepMemory).CurrentEnergySource = (creep.room.memory as RoomMemory).CurrentEnergySource;
         }
     }
 };
