@@ -11,7 +11,7 @@ export class PaverAttributes {
         MOVE
     ];
     TinyCost: number = 350;
-    TinyWorth: number = 1
+    TinyWorth: number = 2
 
     //Small Paver: 4 WORK / 4 CARRY / 2 MOVE Total Cost: 700 Energy for 10 total parts
     Small: BodyPartConstant[] = [
@@ -20,7 +20,7 @@ export class PaverAttributes {
         MOVE, MOVE
     ];
     SmallCost: number = 700;
-    SmallWorth: number = 2
+    SmallWorth: number = 3
 
     //Medium Paver: 6 WORK / 8 CARRY / 4 MOVE Total Cost: 1200 Energy for 18 total parts
     Medium: BodyPartConstant[] = [
@@ -29,7 +29,7 @@ export class PaverAttributes {
         MOVE, MOVE, MOVE, MOVE
     ];
     MediumCost: number = 1200;
-    MediumWorth: number = 2
+    MediumWorth: number = 4
 
     //Large Paver: 8 WORK / 12 CARRY / 5 TOUGH / 6 MOVE Total Cost: 1750 Energy for 31 total parts
     Large: BodyPartConstant[] = [
@@ -39,7 +39,7 @@ export class PaverAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     LargeCost: number = 1750;
-    LargeWorth: number = 2
+    LargeWorth: number = 5
 
     //Jumbo Paver: 10 WORK / 16 CARRY / 10 TOUGH / 8 MOVE Total Cost: 2300 Energy for 44 total parts
     Jumbo: BodyPartConstant[] = [
@@ -49,7 +49,7 @@ export class PaverAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     JumboCost: number = 2300;
-    JumboWorth: number = 3
+    JumboWorth: number = 6
 
     //Mega Paver: 12 WORK / 18 CARRY / 10 TOUGH / 10 MOVE Total Cost: 2700 Energy for 50 total parts
     Mega: BodyPartConstant[] = [
@@ -59,7 +59,7 @@ export class PaverAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     MegaCost: number = 2700;
-    MegaWorth: number = 3
+    MegaWorth: number = 7
 }
 
 // BODYPART_COST: {

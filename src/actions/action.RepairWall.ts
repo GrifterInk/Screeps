@@ -1,6 +1,7 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
+import { creepCommunication } from "utils/utilities.creepCommunication";
 
 export class actionRepairWall {
     constructor() {
@@ -27,10 +28,10 @@ export class actionRepairWall {
         var targets = this.getRepairTarget(creep);
 
         if (targets && targets.length) {
-            creep.say(Actions.RepairWall);
             (creep.memory as CreepMemory).CurrentAction = Actions.Build;
 
             if (creep.repair(targets[0]) == ERR_NOT_IN_RANGE) {
+                creepCommunication.Talk(creep);
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.Repair } });
             }
         }

@@ -2,6 +2,8 @@ import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { arrayFunctions } from "utils/utilities.ArrayFunctions";
+import { creepCommunication } from "utils/utilities.creepCommunication";
 
 export class actionHarvest {
     constructor() {
@@ -22,7 +24,6 @@ export class actionHarvest {
     }
 
     Execute(creep: Creep) {
-        creep.say(Actions.Harvest);
         (creep.memory as CreepMemory).CurrentAction = Actions.Harvest;
 
         var sources = creep.room.find(FIND_SOURCES);
@@ -36,12 +37,13 @@ export class actionHarvest {
             //console.log("New Energy Source: [" + (creep.memory as CreepMemory).CurrentEnergySource + "]");
         }
         else if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
+            creepCommunication.Talk(creep);
             creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
         }
     }
 
     private determineCurrentEnergySource(creep: Creep, numberOfSources: number) {
-        if ((creep.room.memory as RoomMemory).CurrentEnergySource == -1) { //Room is currently set to pull randomly from its energy sources
+        if (!(creep.room.memory as RoomMemory).CurrentEnergySource.length) { //Room is currently set to pull randomly from its energy sources
             if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
                 var randomSourceID = Math.floor(Math.random() * numberOfSources);
 
@@ -59,7 +61,9 @@ export class actionHarvest {
             }
         }
         else { //Room is set to use a specific energy source via Memory
-            (creep.memory as CreepMemory).CurrentEnergySource = (creep.room.memory as RoomMemory).CurrentEnergySource;
+            if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
+                (creep.memory as CreepMemory).CurrentEnergySource = arrayFunctions.GetRandomValueFromArray((creep.room.memory as RoomMemory).CurrentEnergySource);
+            }
         }
     }
 };

@@ -8,6 +8,7 @@ import { actionRepairSpawn } from "actions/action.RepairSpawn";
 import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionUpgrade } from "actions/action.Upgrade";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
 
 export class Paver {
     PaverAttributes: PaverAttributes = new PaverAttributes();
@@ -16,12 +17,13 @@ export class Paver {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        let currentPaverWorth: number = this.getCurrentPaversWorth();
+        this.CurrentPaversCount(spawnPoint); //Important for Room Memory updating!
+        let currentPaverWorth: number = this.getCurrentPaversWorth(spawnPoint);
         let currentPaverNeed: number = this.getCurrentPaversNeed(spawnPoint);
 
         //console.log("Current Paver Need: " + currentPaverNeed + " / Current Paver Worth: " + currentPaverWorth);
         if (currentPaverNeed > currentPaverWorth) {
-            console.log("A new Paver is needed!")
+            //console.log("A new Paver is needed!")
             return true;
         }
 
@@ -110,7 +112,7 @@ export class Paver {
         }
     }
 
-    CurrentPaversCount() {
+    CurrentPaversCount(spawnPoint: string) {
         let currentPavers: number = 0;
         var pavers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Paver);
 
@@ -118,25 +120,29 @@ export class Paver {
             currentPavers = pavers.length;
         }
 
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepCount = currentPavers;
+
         return currentPavers;
     }
 
 
-    private getCurrentPaversWorth() {
-        let currentPaverWorth: number = 0;
+    private getCurrentPaversWorth(spawnPoint: string) {
+        let currentPaversWorth: number = 0;
         var pavers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Paver);
 
         pavers.forEach(creep => {
             if ((creep.memory as CreepMemory).CurrentWorth) {
-                currentPaverWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
+                currentPaversWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
             }
         });
 
-        return currentPaverWorth;
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepWorth = currentPaversWorth;
+
+        return currentPaversWorth;
     }
 
     private getCurrentPaversNeed(spawnPoint: string) {
-        let currentPaverNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Paver to be available.
+        let currentPaversNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Paver to be available.
 
         let roadsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -144,11 +150,13 @@ export class Paver {
             }
         });
 
-        //We're going to say we need 1 paver for every 3 roads that need repairing.
+        //We're going to say we need 1 paver for every 10 roads that need repairing.
         if(roadsNeedingRepair.length){
-            currentPaverNeed = Math.ceil(roadsNeedingRepair.length / 3);
+            currentPaversNeed = Math.ceil(roadsNeedingRepair.length / 20);
         }
 
-        return currentPaverNeed;
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepNeed = currentPaversNeed;
+
+        return currentPaversNeed;
     }
 };

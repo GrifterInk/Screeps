@@ -8,6 +8,7 @@ import { actionRepairSpawn } from "actions/action.RepairSpawn";
 import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { actionUpgrade } from "actions/action.Upgrade";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
 
 export class Mason {
     MasonAttributes: MasonAttributes = new MasonAttributes();
@@ -16,12 +17,13 @@ export class Mason {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        let currentMasonWorth: number = this.getCurrentMasonsWorth();
+        this.CurrentMasonsCount(spawnPoint); //Important for Room Memory updating!
+        let currentMasonWorth: number = this.getCurrentMasonsWorth(spawnPoint);
         let currentMasonNeed: number = this.getCurrentMasonsNeed(spawnPoint);
 
         //console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
         if (currentMasonNeed > currentMasonWorth) {
-            console.log("A new Mason is needed!")
+            //console.log("A new Mason is needed!")
             return true;
         }
 
@@ -110,7 +112,7 @@ export class Mason {
         }
     }
 
-    CurrentMasonsCount() {
+    CurrentMasonsCount(spawnPoint: string) {
         let currentMasons: number = 0;
         var masons = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Mason);
 
@@ -118,11 +120,13 @@ export class Mason {
             currentMasons = masons.length;
         }
 
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepCount = currentMasons;
+
         return currentMasons;
     }
 
 
-    private getCurrentMasonsWorth() {
+    private getCurrentMasonsWorth(spawnPoint: string) {
         let currentMasonWorth: number = 0;
         var masons = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Mason);
 
@@ -131,6 +135,8 @@ export class Mason {
                 currentMasonWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
             }
         });
+
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepWorth = currentMasonWorth;
 
         return currentMasonWorth;
     }
@@ -147,6 +153,8 @@ export class Mason {
         if(wallsNeedingRepair.length){
             currentMasonNeed = wallsNeedingRepair.length;
         }
+
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonNeed;
 
         return currentMasonNeed;
     }

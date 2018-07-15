@@ -9,6 +9,7 @@ import { actionRepairSpawn } from "actions/action.RepairSpawn";
 import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionRepairWall } from "actions/action.RepairWall";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -17,12 +18,12 @@ export class Builder {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        let currentBuilderWorth: number = this.getCurrentBuildersWorth();
+        let currentBuilderWorth: number = this.getCurrentBuildersWorth(spawnPoint);
         let currentBuilderNeed: number = this.getCurrentBuildersNeed(spawnPoint);
 
         //console.log("Current Builder Need: " + currentBuilderNeed + " / Current Builder Worth: " + currentBuilderWorth);
         if (currentBuilderNeed > currentBuilderWorth) {
-            console.log("A new Builder is needed!")
+            //console.log("A new Builder is needed!")
             return true;
         }
 
@@ -115,7 +116,7 @@ export class Builder {
         }
     }
 
-    CurrentBuildersCount() {
+    CurrentBuildersCount(spawnPoint: string) {
         let currentBuilders: number = 0;
         var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
 
@@ -123,11 +124,13 @@ export class Builder {
             currentBuilders = builders.length;
         }
 
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepCount = currentBuilders;
+
         return currentBuilders;
     }
 
 
-    private getCurrentBuildersWorth() {
+    private getCurrentBuildersWorth(spawnPoint: string) {
         let currentBuilderWorth: number = 0;
         var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
 
@@ -136,6 +139,8 @@ export class Builder {
                 currentBuilderWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
             }
         });
+
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepWorth = currentBuilderWorth;
 
         return currentBuilderWorth;
     }
@@ -147,6 +152,7 @@ export class Builder {
             filter: (constructionSite) => {
                 return constructionSite.structureType == STRUCTURE_SPAWN
                     || constructionSite.structureType == STRUCTURE_TOWER
+                    || constructionSite.structureType == STRUCTURE_STORAGE
                     || constructionSite.structureType == STRUCTURE_EXTENSION
                     || constructionSite.structureType == STRUCTURE_LAB
                     || constructionSite.structureType == STRUCTURE_CONTAINER
@@ -162,9 +168,11 @@ export class Builder {
         constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
             currentBuilderNeed += 4;
         });
-        constructionSitesSimple.forEach(constructionSiteSimple => {
-            currentBuilderNeed += 1;
-        });
+        if (constructionSitesSimple.length) {
+            currentBuilderNeed = Math.ceil(constructionSitesSimple.length / 2);
+        }
+
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepNeed = currentBuilderNeed;
 
         return currentBuilderNeed;
     }

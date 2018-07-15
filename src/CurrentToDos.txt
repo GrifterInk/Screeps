@@ -1,6 +1,4 @@
-1. Code CurrentEnergySource on RoomMemory to allow an array
-2. Code out so that creeps aren't built until energy capacities are reached (unless there are currently 0 of that type of creep)
-3. Code out Current Needs / Haves of Bots into RoomMemory
-4. Code Allies as an array onto RoomMemory
-5. Code Attack / Defense Actions and Roles
-6. Code Bot Naming
+. Code out so that creeps aren't built until energy capacities are reached (unless there are currently 0 of that type of creep)
+. Code out so that we can specify a min / max creep size to be built - may not want to build tiny+ until we have roads for them to travel on
+. Code Attack / Defense Actions and Roles
+. Code Bot Naming

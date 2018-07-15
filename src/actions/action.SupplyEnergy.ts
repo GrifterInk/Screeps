@@ -1,6 +1,7 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
+import { creepCommunication } from "utils/utilities.creepCommunication";
 
 export class actionSupplyEnergy {
     constructor() {
@@ -18,10 +19,10 @@ export class actionSupplyEnergy {
     Execute(creep: Creep) {
         var targets = this.getTargets(creep);
         if (targets && targets.length > 0) {
-            creep.say(Actions.SupplyEnergy);
             (creep.memory as CreepMemory).CurrentAction = Actions.SupplyEnergy;
 
             if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creepCommunication.Talk(creep);
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.SupplyEnergy } });
             }
         }
