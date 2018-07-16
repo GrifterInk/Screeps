@@ -1,4 +1,6 @@
 . Code out so that creeps aren't built until energy capacities are reached (unless there are currently 0 of that type of creep)
 . Code out so that we can specify a min / max creep size to be built - may not want to build tiny+ until we have roads for them to travel on
+. Have to add minority roles checking into all of the classes, similar to how upgraders currently have.
+. Switch Road / Wall building to Pavers and Masons away from Builders
 . Code Attack / Defense Actions and Roles
 . Code Bot Naming

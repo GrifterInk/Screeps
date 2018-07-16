@@ -10,6 +10,8 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { Paver } from "./controller.Paver";
+import { Mason } from "./controller.Mason";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -147,29 +149,37 @@ export class Builder {
 
     private getCurrentBuildersNeed(spawnPoint: string) {
         let currentBuilderNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a builder to be available.
+        let paver: Paver = new Paver();
+        let mason: Mason = new Mason();
 
-        let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_SPAWN
-                    || constructionSite.structureType == STRUCTURE_TOWER
-                    || constructionSite.structureType == STRUCTURE_STORAGE
-                    || constructionSite.structureType == STRUCTURE_EXTENSION
-                    || constructionSite.structureType == STRUCTURE_LAB
-                    || constructionSite.structureType == STRUCTURE_CONTAINER
-            }
-        });
-        let constructionSitesSimple = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_ROAD
-                    || constructionSite.structureType == STRUCTURE_WALL
-            }
-        });
+        //Don't build Builders at the expense of not being able to do anything else
+        //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Builders
+        if (this.CurrentBuildersCount(spawnPoint) == 0
+            || !paver.NeedToSpawn(spawnPoint) || paver.CurrentPaversCount(spawnPoint) > 0
+            || !mason.NeedToSpawn(spawnPoint) || mason.CurrentMasonsCount(spawnPoint) > 0) {
+            let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (constructionSite) => {
+                    return constructionSite.structureType == STRUCTURE_SPAWN
+                        || constructionSite.structureType == STRUCTURE_TOWER
+                        || constructionSite.structureType == STRUCTURE_STORAGE
+                        || constructionSite.structureType == STRUCTURE_EXTENSION
+                        || constructionSite.structureType == STRUCTURE_LAB
+                        || constructionSite.structureType == STRUCTURE_CONTAINER
+                }
+            });
+            let constructionSitesSimple = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (constructionSite) => {
+                    return constructionSite.structureType == STRUCTURE_ROAD
+                        || constructionSite.structureType == STRUCTURE_WALL
+                }
+            });
 
-        constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
-            currentBuilderNeed += 4;
-        });
-        if (constructionSitesSimple.length) {
-            currentBuilderNeed = Math.ceil(constructionSitesSimple.length / 2);
+            constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
+                currentBuilderNeed += 4;
+            });
+            if (constructionSitesSimple.length) {
+                currentBuilderNeed += Math.ceil(constructionSitesSimple.length / 2);
+            }
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepNeed = currentBuilderNeed;

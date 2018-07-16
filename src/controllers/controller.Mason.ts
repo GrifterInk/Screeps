@@ -21,7 +21,7 @@ export class Mason {
         let currentMasonWorth: number = this.getCurrentMasonsWorth(spawnPoint);
         let currentMasonNeed: number = this.getCurrentMasonsNeed(spawnPoint);
 
-        //console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
+        console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
         if (currentMasonNeed > currentMasonWorth) {
             //console.log("A new Mason is needed!")
             return true;

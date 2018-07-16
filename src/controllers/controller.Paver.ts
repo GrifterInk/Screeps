@@ -9,6 +9,7 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { Mason } from "./controller.Mason";
 
 export class Paver {
     PaverAttributes: PaverAttributes = new PaverAttributes();
@@ -143,16 +144,23 @@ export class Paver {
 
     private getCurrentPaversNeed(spawnPoint: string) {
         let currentPaversNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Paver to be available.
+        let mason: Mason = new Mason();
 
-        let roadsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax;
+        //Don't build Pavers at the expense of not being able to do anything else
+        //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Pavers.
+        if (this.CurrentPaversCount(spawnPoint) == 0
+            || !mason.NeedToSpawn(spawnPoint) || mason.CurrentMasonsCount(spawnPoint) > 0) {
+
+            let roadsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax;
+                }
+            });
+
+            //We're going to say we need 1 paver for every 10 roads that need repairing.
+            if (roadsNeedingRepair.length) {
+                currentPaversNeed = Math.ceil(roadsNeedingRepair.length / 20);
             }
-        });
-
-        //We're going to say we need 1 paver for every 10 roads that need repairing.
-        if(roadsNeedingRepair.length){
-            currentPaversNeed = Math.ceil(roadsNeedingRepair.length / 20);
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepNeed = currentPaversNeed;
