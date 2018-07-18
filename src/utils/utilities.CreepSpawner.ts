@@ -8,7 +8,7 @@ export class CreepSpawner {
     constructor() {
     }
 
-    static SpawnProperSizedCreep(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles) {
+    static SpawnProperSizedCreep(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, currentNumberOfCreepsInRole: number) {
         let creepAttributes = this.getCreepAttributes(creepRole);
 
         if (creepAttributes) {

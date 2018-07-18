@@ -12,6 +12,7 @@ import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";
 import { CreepSpawner } from "utils/utilities.CreepSpawner";
+import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -20,7 +21,8 @@ export class Builder {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        let currentBuilderWorth: number = this.getCurrentBuildersWorth(spawnPoint);
+        CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder); //Important for Room Memory updating!
+        let currentBuilderWorth: number = CreepRoleFunctions.GetCurrentCreepWorthForRole(spawnPoint, Roles.Builder);
         let currentBuilderNeed: number = this.getCurrentBuildersNeed(spawnPoint);
 
         //console.log("Current Builder Need: " + currentBuilderNeed + " / Current Builder Worth: " + currentBuilderWorth);
@@ -38,7 +40,7 @@ export class Builder {
 
         let creepMemory: CreepMemory = { Role: Roles.Builder, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Builder);
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Builder, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder));
     }
 
     Act(creep: Creep) {
@@ -77,34 +79,6 @@ export class Builder {
         }
     }
 
-    CurrentBuildersCount(spawnPoint: string) {
-        let currentBuilders: number = 0;
-        var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
-
-        if (builders.length) {
-            currentBuilders = builders.length;
-        }
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepCount = currentBuilders;
-
-        return currentBuilders;
-    }
-
-    private getCurrentBuildersWorth(spawnPoint: string) {
-        let currentBuilderWorth: number = 0;
-        var builders = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Builder);
-
-        builders.forEach(creep => {
-            if ((creep.memory as CreepMemory).CurrentWorth) {
-                currentBuilderWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
-            }
-        });
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepWorth = currentBuilderWorth;
-
-        return currentBuilderWorth;
-    }
-
     private getCurrentBuildersNeed(spawnPoint: string) {
         let currentBuilderNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a builder to be available.
         let paver: Paver = new Paver();
@@ -112,9 +86,9 @@ export class Builder {
 
         //Don't build Builders at the expense of not being able to do anything else
         //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Builders
-        if (this.CurrentBuildersCount(spawnPoint) == 0
-            || !paver.NeedToSpawn(spawnPoint) || paver.CurrentPaversCount(spawnPoint) > 0
-            || !mason.NeedToSpawn(spawnPoint) || mason.CurrentMasonsCount(spawnPoint) > 0) {
+        if (CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder) == 0
+            || !paver.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver) > 0
+            || !mason.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason) > 0) {
             let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (constructionSite) => {
                     return constructionSite.structureType == STRUCTURE_SPAWN

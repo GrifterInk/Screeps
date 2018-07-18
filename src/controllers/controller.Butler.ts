@@ -6,6 +6,7 @@ import { actionHarvest } from "actions/action.Harvest";
 import { ButlerAttributes } from "attributes/class.ButlerAttributes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepSpawner } from "utils/utilities.CreepSpawner";
+import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 
 export class Butler {
     butlerAttributes: ButlerAttributes = new ButlerAttributes();
@@ -14,8 +15,8 @@ export class Butler {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        this.CurrentButlersCount(spawnPoint); //Important for Room Memory updating!
-        let currentButlerWorth: number = this.getCurrentButlersWorth(spawnPoint);
+        CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Butler); //Important for Room Memory updating!
+        let currentButlerWorth: number = CreepRoleFunctions.GetCurrentCreepWorthForRole(spawnPoint, Roles.Butler);
         let currentButlerNeed: number = this.getCurrentButlersNeed(spawnPoint);
 
         //console.log("Current Butler Need: " + currentButlerNeed + " / Current Butler Worth: " + currentButlerWorth);
@@ -33,7 +34,7 @@ export class Butler {
 
         let creepMemory: CreepMemory = { Role: Roles.Butler, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Butler);
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Butler, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Butler));
     }
 
     Act(creep: Creep) {
@@ -51,34 +52,6 @@ export class Butler {
             let upgrade: actionUpgrade = new actionUpgrade();
             upgrade.Execute(creep);
         }
-    }
-
-    CurrentButlersCount(spawnPoint: string) {
-        let currentButlers: number = 0;
-        var butlers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Butler);
-
-        if (butlers.length) {
-            currentButlers = butlers.length;
-        }
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Butlers.CurrentCreepCount = currentButlers;
-
-        return currentButlers;
-    }
-
-    private getCurrentButlersWorth(spawnPoint: string) {
-        let currentButlerWorth: number = 0;
-        var butlers = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Butler);
-
-        butlers.forEach(creep => {
-            if ((creep.memory as CreepMemory).CurrentWorth) {
-                currentButlerWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
-            }
-        });
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Butlers.CurrentCreepWorth = currentButlerWorth;
-
-        return currentButlerWorth;
     }
 
     private getCurrentButlersNeed(spawnPoint: string) {

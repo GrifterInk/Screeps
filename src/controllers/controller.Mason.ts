@@ -9,6 +9,7 @@ import { actionRepairWall } from "actions/action.RepairWall";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepSpawner } from "utils/utilities.CreepSpawner";
+import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 
 export class Mason {
     MasonAttributes: MasonAttributes = new MasonAttributes();
@@ -17,11 +18,11 @@ export class Mason {
     }
 
     NeedToSpawn(spawnPoint: string) {
-        this.CurrentMasonsCount(spawnPoint); //Important for Room Memory updating!
-        let currentMasonWorth: number = this.getCurrentMasonsWorth(spawnPoint);
+        CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason); //Important for Room Memory updating!
+        let currentMasonWorth: number = CreepRoleFunctions.GetCurrentCreepWorthForRole(spawnPoint, Roles.Mason);
         let currentMasonNeed: number = this.getCurrentMasonsNeed(spawnPoint);
 
-        console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
+        //console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
         if (currentMasonNeed > currentMasonWorth) {
             //console.log("A new Mason is needed!")
             return true;
@@ -36,7 +37,7 @@ export class Mason {
 
         let creepMemory: CreepMemory = { Role: Roles.Mason, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Mason);
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Mason, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason));
     }
 
     Act(creep: Creep) {
@@ -71,35 +72,6 @@ export class Mason {
         }
     }
 
-    CurrentMasonsCount(spawnPoint: string) {
-        let currentMasons: number = 0;
-        var masons = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Mason);
-
-        if (masons.length) {
-            currentMasons = masons.length;
-        }
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepCount = currentMasons;
-
-        return currentMasons;
-    }
-
-
-    private getCurrentMasonsWorth(spawnPoint: string) {
-        let currentMasonWorth: number = 0;
-        var masons = _.filter(Game.creeps, (creep) => (creep.memory as CreepMemory).Role == Roles.Mason);
-
-        masons.forEach(creep => {
-            if ((creep.memory as CreepMemory).CurrentWorth) {
-                currentMasonWorth += ((creep.memory as CreepMemory).CurrentWorth as number);
-            }
-        });
-
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepWorth = currentMasonWorth;
-
-        return currentMasonWorth;
-    }
-
     private getCurrentMasonsNeed(spawnPoint: string) {
         let currentMasonNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Mason to be available.
 
@@ -109,7 +81,7 @@ export class Mason {
             }
         });
 
-        if(wallsNeedingRepair.length){
+        if (wallsNeedingRepair.length) {
             currentMasonNeed = wallsNeedingRepair.length;
         }
 
