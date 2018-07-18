@@ -4,7 +4,6 @@ import { Roles } from "constants/enum.Roles";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { UpgraderAttributes } from "attributes/class.UpgraderAttributes";
-import { CreepSizes } from "constants/enum.CreepSizes";
 import { Builder } from "./controller.Builder";
 import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";

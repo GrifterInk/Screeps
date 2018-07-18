@@ -3,72 +3,135 @@ import { Roles } from "constants/enum.Roles";
 import { ButlerAttributes } from "attributes/class.ButlerAttributes";
 import { UpgraderAttributes } from "attributes/class.UpgraderAttributes";
 import { CreepSizes } from "constants/enum.CreepSizes";
+import { BuilderAttributes } from "attributes/class.BuilderAttributes";
+import { RoleAttributes } from "interfaces/interface.RoleAttributes";
+import { PaverAttributes } from "attributes/class.PaverAttributes";
+import { MasonAttributes } from "attributes/class.MasonAttributes";
+import { CreepRoleFunctions } from "./utilities.CreepRoleFunctions";
 
 export class CreepSpawner {
     constructor() {
     }
 
     static SpawnProperSizedCreep(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, currentNumberOfCreepsInRole: number) {
-        let creepAttributes = this.getCreepAttributes(creepRole);
+        let creepAttributes = this.getRoleAttributes(creepRole);
+        let currentEnergyCapacity = this.getEnergyCapacity(spawnPoint);
 
-        if (creepAttributes) {
-            if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Mega, "Mega-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Mega Sized ' + creepRole + ': ' + "Mega-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Mega;
-                creepMemory.CurrentWorth = creepAttributes.MegaWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Mega, "Mega-" + creepName, { memory: creepMemory });
+        if (creepAttributes && creepAttributes.MiniCost > 0) {
+            //Logic Tree is basically:
+            //  If you have 0 creeps of role, then spawn the biggest you can at the current time
+            //  If you already have creeps of role, then wait until you have enough energy to create the biggest sized creep your capacity will allow and then create that sized creep
+
+            if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)) {
+                //Spawn Mega Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Jumbo, "Jumbo-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Jumbo Sized ' + creepRole + ': ' + "Jumbo-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Jumbo;
-                creepMemory.CurrentWorth = creepAttributes.JumboWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Jumbo, "Jumbo-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.JumboWorth && currentEnergyCapacity < creepAttributes.MegaWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth)) {
+                //Spawn Jumbo Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth);
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Large, "Large-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Large Sized ' + creepRole + ': ' + "Large-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Large;
-                creepMemory.CurrentWorth = creepAttributes.LargeWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Large, "Large-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.LargeWorth && currentEnergyCapacity < creepAttributes.JumboWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)) {
+                //Spawn Large Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Medium, "Medium-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Medium Sized ' + creepRole + ': ' + "Medium-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Medium;
-                creepMemory.CurrentWorth = creepAttributes.MediumWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Medium, "Medium-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.MediumWorth && currentEnergyCapacity < creepAttributes.LargeWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)) {
+                //Spawn Medium Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Small, "Small-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Small Sized ' + creepRole + ': ' + "Small-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Small;
-                creepMemory.CurrentWorth = creepAttributes.SmallWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Small, "Small-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.SmallWorth && currentEnergyCapacity < creepAttributes.MediumWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)) {
+                //Spawn Small Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Tiny, "Tiny-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Tiny Sized ' + creepRole + ': ' + "Tiny-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Tiny;
-                creepMemory.CurrentWorth = creepAttributes.TinyWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Tiny, "Tiny-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.TinyWorth && currentEnergyCapacity < creepAttributes.SmallWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)) {
+                //Spawn Tiny Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)
             }
-            else if (Game.spawns[spawnPoint].spawnCreep(creepAttributes.Mini, "Mini-" + creepName, { memory: creepMemory, dryRun: true }) == 0) {
-                console.log('Spawning new Mini Sized ' + creepRole + ': ' + "Mini-" + creepName);
-                creepMemory.CurrentSize = CreepSizes.Mini;
-                creepMemory.CurrentWorth = creepAttributes.MiniWorth;
-                Game.spawns[spawnPoint].spawnCreep(creepAttributes.Mini, "Mini-" + creepName, { memory: creepMemory });
+            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
+                || (currentEnergyCapacity >= creepAttributes.MiniWorth && currentEnergyCapacity < creepAttributes.TinyWorth))
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)) {
+                //Spawn Mini Creep
+                this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)
             }
         }
     }
 
-    private static getCreepAttributes(creepRole: Roles) {
-        if (creepRole == Roles.Butler) {
-            let butlerAttributes: ButlerAttributes = new ButlerAttributes();
+    private static getEnergyCapacity(spawnPoint: string) {
+        return Game.spawns[spawnPoint].room.energyCapacityAvailable;
+    }
 
-            return butlerAttributes;
+    private static canSpawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
+        let fullName: string = targetCreepSize + "-" + creepName;
+
+        if (Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory, dryRun: true }) == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static spawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
+        let fullName: string = targetCreepSize + "-" + creepName;
+
+        console.log('Spawning new ' + targetCreepSize + ' Sized ' + creepRole + ': ' + fullName);
+        creepMemory.CurrentSize = targetCreepSize;
+        creepMemory.CurrentWorth = creepSizeWorth;
+        Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory });
+    }
+
+    private static getRoleAttributes(creepRole: Roles) {
+        let creepAttributes: RoleAttributes;
+
+        if (creepRole == Roles.Butler) {
+            creepAttributes = new ButlerAttributes();
         }
         else if (creepRole == Roles.Upgrader) {
-            let upgraderAttributes: UpgraderAttributes = new UpgraderAttributes();
-
-            return upgraderAttributes;
+            creepAttributes = new UpgraderAttributes();
+        }
+        else if (creepRole == Roles.Builder) {
+            creepAttributes = new BuilderAttributes();
+        }
+        else if (creepRole == Roles.Paver) {
+            creepAttributes = new PaverAttributes();
+        }
+        else if (creepRole == Roles.Mason) {
+            creepAttributes = new MasonAttributes();
+        }
+        else {
+            creepAttributes = {
+                Mini: [],
+                MiniCost: 0,
+                MiniWorth: 0,
+                Tiny: [],
+                TinyCost: 0,
+                TinyWorth: 0,
+                Small: [],
+                SmallCost: 0,
+                SmallWorth: 0,
+                Medium: [],
+                MediumCost: 0,
+                MediumWorth: 0,
+                Large: [],
+                LargeCost: 0,
+                LargeWorth: 0,
+                Jumbo: [],
+                JumboCost: 0,
+                JumboWorth: 0,
+                Mega: [],
+                MegaCost: 0,
+                MegaWorth: 0
+            };
         }
 
-        return undefined;
+        return creepAttributes;
     }
 }
