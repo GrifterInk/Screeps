@@ -9,6 +9,7 @@ import { Builder } from "./controller.Builder";
 import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { CreepSpawner } from "utils/utilities.CreepSpawner";
 
 export class Upgrader {
     UpgraderAttributes: UpgraderAttributes = new UpgraderAttributes();
@@ -32,52 +33,11 @@ export class Upgrader {
     }
 
     Spawn(spawnPoint: string) {
-        var newName = 'Upgrader_' + Game.time;
+        var creepName = 'Upgrader_' + Game.time;
 
         let creepMemory: CreepMemory = { Role: Roles.Upgrader, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Mega, "Mega-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mega Sized Upgrader: ' + "Mega-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mega;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.MegaWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Mega, "Mega-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Jumbo Sized Upgrader: ' + "Jumbo-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Jumbo;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.JumboWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Large, "Large-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Large Sized Upgrader: ' + "Large-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Large;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.LargeWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Large, "Large-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Medium, "Medium-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Medium Sized Upgrader: ' + "Medium-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Medium;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.MediumWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Medium, "Medium-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Small, "Small-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Small Sized Upgrader: ' + "Small-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Small;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.SmallWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Small, "Small-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Tiny Sized Upgrader: ' + "Tiny-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Tiny;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.TinyWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Mini, "Mini-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mini Sized Upgrader: ' + "Mini-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mini;
-            creepMemory.CurrentWorth = this.UpgraderAttributes.MiniWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.UpgraderAttributes.Mini, "Mini-" + newName, { memory: creepMemory });
-        }
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Upgrader);
     }
 
     Act(creep: Creep) {

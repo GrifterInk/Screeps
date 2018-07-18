@@ -2,7 +2,6 @@ import { Roles } from "constants/enum.Roles";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { PaverAttributes } from "attributes/class.PaverAttributes";
-import { CreepSizes } from "constants/enum.CreepSizes";
 import { actionRepairTower } from "actions/action.RepairTower";
 import { actionRepairSpawn } from "actions/action.RepairSpawn";
 import { actionRepairExtension } from "actions/action.RepairExtension";
@@ -10,6 +9,7 @@ import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { Mason } from "./controller.Mason";
+import { CreepSpawner } from "utils/utilities.CreepSpawner";
 
 export class Paver {
     PaverAttributes: PaverAttributes = new PaverAttributes();
@@ -33,52 +33,11 @@ export class Paver {
     }
 
     Spawn(spawnPoint: string) {
-        var newName = 'Paver_' + Game.time;
+        var creepName = 'Paver_' + Game.time;
 
         let creepMemory: CreepMemory = { Role: Roles.Paver, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Mega, "Mega-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mega Sized Paver: ' + "Mega-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mega;
-            creepMemory.CurrentWorth = this.PaverAttributes.MegaWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Mega, "Mega-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Jumbo Sized Paver: ' + "Jumbo-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Jumbo;
-            creepMemory.CurrentWorth = this.PaverAttributes.JumboWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Large, "Large-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Large Sized Paver: ' + "Large-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Large;
-            creepMemory.CurrentWorth = this.PaverAttributes.LargeWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Large, "Large-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Medium, "Medium-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Medium Sized Paver: ' + "Medium-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Medium;
-            creepMemory.CurrentWorth = this.PaverAttributes.MediumWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Medium, "Medium-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Small, "Small-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Small Sized Paver: ' + "Small-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Small;
-            creepMemory.CurrentWorth = this.PaverAttributes.SmallWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Small, "Small-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Tiny Sized Paver: ' + "Tiny-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Tiny;
-            creepMemory.CurrentWorth = this.PaverAttributes.TinyWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Mini, "Mini-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mini Sized Paver: ' + "Mini-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mini;
-            creepMemory.CurrentWorth = this.PaverAttributes.MiniWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.PaverAttributes.Mini, "Mini-" + newName, { memory: creepMemory });
-        }
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Paver);
     }
 
     Act(creep: Creep) {

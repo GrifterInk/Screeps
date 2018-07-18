@@ -2,7 +2,6 @@ import { Roles } from "constants/enum.Roles";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { BuilderAttributes } from "attributes/class.BuilderAttributes";
-import { CreepSizes } from "constants/enum.CreepSizes";
 import { actionBuild } from "actions/action.Build";
 import { actionRepairTower } from "actions/action.RepairTower";
 import { actionRepairSpawn } from "actions/action.RepairSpawn";
@@ -12,6 +11,7 @@ import { actionRepairWall } from "actions/action.RepairWall";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";
+import { CreepSpawner } from "utils/utilities.CreepSpawner";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -34,52 +34,11 @@ export class Builder {
     }
 
     Spawn(spawnPoint: string) {
-        var newName = 'Builder_' + Game.time;
+        var creepName = 'Builder_' + Game.time;
 
         let creepMemory: CreepMemory = { Role: Roles.Builder, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Mega, "Mega-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mega Sized Builder: ' + "Mega-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mega;
-            creepMemory.CurrentWorth = this.BuilderAttributes.MegaWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Mega, "Mega-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Jumbo Sized Builder: ' + "Jumbo-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Jumbo;
-            creepMemory.CurrentWorth = this.BuilderAttributes.JumboWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Large, "Large-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Large Sized Builder: ' + "Large-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Large;
-            creepMemory.CurrentWorth = this.BuilderAttributes.LargeWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Large, "Large-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Medium, "Medium-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Medium Sized Builder: ' + "Medium-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Medium;
-            creepMemory.CurrentWorth = this.BuilderAttributes.MediumWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Medium, "Medium-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Small, "Small-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Small Sized Builder: ' + "Small-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Small;
-            creepMemory.CurrentWorth = this.BuilderAttributes.SmallWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Small, "Small-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Tiny Sized Builder: ' + "Tiny-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Tiny;
-            creepMemory.CurrentWorth = this.BuilderAttributes.TinyWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Mini, "Mini-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mini Sized Builder: ' + "Mini-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mini;
-            creepMemory.CurrentWorth = this.BuilderAttributes.MiniWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.BuilderAttributes.Mini, "Mini-" + newName, { memory: creepMemory });
-        }
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Builder);
     }
 
     Act(creep: Creep) {
@@ -130,7 +89,6 @@ export class Builder {
 
         return currentBuilders;
     }
-
 
     private getCurrentBuildersWorth(spawnPoint: string) {
         let currentBuilderWorth: number = 0;

@@ -4,8 +4,8 @@ import { Roles } from "constants/enum.Roles";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { ButlerAttributes } from "attributes/class.ButlerAttributes";
-import { CreepSizes } from "constants/enum.CreepSizes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { CreepSpawner } from "utils/utilities.CreepSpawner";
 
 export class Butler {
     butlerAttributes: ButlerAttributes = new ButlerAttributes();
@@ -29,52 +29,11 @@ export class Butler {
     }
 
     Spawn(spawnPoint: string) {
-        var newName = 'Butler_' + Game.time;
+        var creepName = 'Butler_' + Game.time;
 
         let creepMemory: CreepMemory = { Role: Roles.Butler, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Mega, "Mega-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mega Sized Butler: ' + "Mega-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mega;
-            creepMemory.CurrentWorth = this.butlerAttributes.MegaWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Mega, "Mega-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Jumbo Sized Butler: ' + "Jumbo-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Jumbo;
-            creepMemory.CurrentWorth = this.butlerAttributes.JumboWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Jumbo, "Jumbo-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Large, "Large-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Large Sized Butler: ' + "Large-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Large;
-            creepMemory.CurrentWorth = this.butlerAttributes.LargeWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Large, "Large-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Medium, "Medium-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Medium Sized Butler: ' + "Medium-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Medium;
-            creepMemory.CurrentWorth = this.butlerAttributes.MediumWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Medium, "Medium-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Small, "Small-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Small Sized Butler: ' + "Small-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Small;
-            creepMemory.CurrentWorth = this.butlerAttributes.SmallWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Small, "Small-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Tiny Sized Butler: ' + "Tiny-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Tiny;
-            creepMemory.CurrentWorth = this.butlerAttributes.TinyWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Tiny, "Tiny-" + newName, { memory: creepMemory });
-        }
-        else if (Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Mini, "Mini-" + newName, { memory: creepMemory, dryRun: true }) == 0) {
-            console.log('Spawning new Mini Sized Butler: ' + "Mini-" + newName);
-            creepMemory.CurrentSize = CreepSizes.Mini;
-            creepMemory.CurrentWorth = this.butlerAttributes.MiniWorth;
-            Game.spawns[spawnPoint].spawnCreep(this.butlerAttributes.Mini, "Mini-" + newName, { memory: creepMemory });
-        }
+        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Butler);
     }
 
     Act(creep: Creep) {
