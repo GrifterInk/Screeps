@@ -9,8 +9,8 @@ import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { Mason } from "./controller.Mason";
-import { CreepSpawner } from "utils/utilities.CreepSpawner";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
+import { actionSpawn } from "actions/action.Spawn";
 
 export class Paver {
     PaverAttributes: PaverAttributes = new PaverAttributes();
@@ -38,7 +38,8 @@ export class Paver {
 
         let creepMemory: CreepMemory = { Role: Roles.Paver, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Paver, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver));
+        let spawn: actionSpawn = new actionSpawn();
+        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Paver, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver));
     }
 
     Act(creep: Creep) {

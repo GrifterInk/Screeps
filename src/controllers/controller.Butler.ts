@@ -5,8 +5,8 @@ import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { ButlerAttributes } from "attributes/class.ButlerAttributes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { CreepSpawner } from "utils/utilities.CreepSpawner";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
+import { actionSpawn } from "actions/action.Spawn";
 
 export class Butler {
     butlerAttributes: ButlerAttributes = new ButlerAttributes();
@@ -34,7 +34,8 @@ export class Butler {
 
         let creepMemory: CreepMemory = { Role: Roles.Butler, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Butler, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Butler));
+        let spawn: actionSpawn = new actionSpawn();
+        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Butler, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Butler));
     }
 
     Act(creep: Creep) {

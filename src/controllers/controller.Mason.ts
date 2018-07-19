@@ -8,8 +8,8 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { CreepSpawner } from "utils/utilities.CreepSpawner";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
+import { actionSpawn } from "actions/action.Spawn";
 
 export class Mason {
     MasonAttributes: MasonAttributes = new MasonAttributes();
@@ -37,7 +37,8 @@ export class Mason {
 
         let creepMemory: CreepMemory = { Role: Roles.Mason, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Mason, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason));
+        let spawn: actionSpawn = new actionSpawn();
+        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Mason, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason));
     }
 
     Act(creep: Creep) {

@@ -7,13 +7,13 @@ import { BuilderAttributes } from "attributes/class.BuilderAttributes";
 import { RoleAttributes } from "interfaces/interface.RoleAttributes";
 import { PaverAttributes } from "attributes/class.PaverAttributes";
 import { MasonAttributes } from "attributes/class.MasonAttributes";
-import { CreepRoleFunctions } from "./utilities.CreepRoleFunctions";
+import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 
-export class CreepSpawner {
+export class actionSpawn {
     constructor() {
     }
 
-    static SpawnProperSizedCreep(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, currentNumberOfCreepsInRole: number) {
+    Execute(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, currentNumberOfCreepsInRole: number) {
         let creepAttributes = this.getRoleAttributes(creepRole);
         let currentEnergyCapacity = this.getEnergyCapacity(spawnPoint);
 
@@ -65,11 +65,11 @@ export class CreepSpawner {
         }
     }
 
-    private static getEnergyCapacity(spawnPoint: string) {
+    private getEnergyCapacity(spawnPoint: string) {
         return Game.spawns[spawnPoint].room.energyCapacityAvailable;
     }
 
-    private static canSpawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
+    private canSpawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
         let fullName: string = targetCreepSize + "-" + creepName;
 
         if (Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory, dryRun: true }) == 0) {
@@ -79,7 +79,7 @@ export class CreepSpawner {
         return false;
     }
 
-    private static spawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
+    private spawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
         let fullName: string = targetCreepSize + "-" + creepName;
 
         console.log('Spawning new ' + targetCreepSize + ' Sized ' + creepRole + ': ' + fullName);
@@ -88,7 +88,7 @@ export class CreepSpawner {
         Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory });
     }
 
-    private static getRoleAttributes(creepRole: Roles) {
+    private getRoleAttributes(creepRole: Roles) {
         let creepAttributes: RoleAttributes;
 
         if (creepRole == Roles.Butler) {

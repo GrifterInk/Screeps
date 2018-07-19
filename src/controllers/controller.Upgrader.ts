@@ -8,8 +8,8 @@ import { Builder } from "./controller.Builder";
 import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { CreepSpawner } from "utils/utilities.CreepSpawner";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
+import { actionSpawn } from "actions/action.Spawn";
 
 export class Upgrader {
     UpgraderAttributes: UpgraderAttributes = new UpgraderAttributes();
@@ -37,7 +37,8 @@ export class Upgrader {
 
         let creepMemory: CreepMemory = { Role: Roles.Upgrader, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
 
-        CreepSpawner.SpawnProperSizedCreep(spawnPoint, creepName, creepMemory, Roles.Upgrader, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Upgrader));
+        let spawn: actionSpawn = new actionSpawn();
+        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Upgrader, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Upgrader));
     }
 
     Act(creep: Creep) {
