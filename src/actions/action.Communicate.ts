@@ -1,11 +1,10 @@
-import { Actions } from "constants/enum.Actions";
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 
-export class creepCommunication {
+export class actionCommunicate {
     constructor() {
     }
 
-    static Talk(creep: Creep) {
+    Execute(creep: Creep){
         var random = Math.floor(Math.random() * 10);  //Want them typically not saying anything
 
         if(random === 0){
@@ -18,4 +17,4 @@ export class creepCommunication {
             creep.say((creep.memory as CreepMemory).CurrentAction);
         }
     }
-};
+}

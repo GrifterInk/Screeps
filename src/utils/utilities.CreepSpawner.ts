@@ -27,37 +27,37 @@ export class CreepSpawner {
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.JumboWorth && currentEnergyCapacity < creepAttributes.MegaWorth))
+                || (currentEnergyCapacity >= creepAttributes.JumboCost && currentEnergyCapacity < creepAttributes.MegaCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth)) {
                 //Spawn Jumbo Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth);
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.LargeWorth && currentEnergyCapacity < creepAttributes.JumboWorth))
+                || (currentEnergyCapacity >= creepAttributes.LargeCost && currentEnergyCapacity < creepAttributes.JumboCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)) {
                 //Spawn Large Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.MediumWorth && currentEnergyCapacity < creepAttributes.LargeWorth))
+                || (currentEnergyCapacity >= creepAttributes.MediumCost && currentEnergyCapacity < creepAttributes.LargeCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)) {
                 //Spawn Medium Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.SmallWorth && currentEnergyCapacity < creepAttributes.MediumWorth))
+                || (currentEnergyCapacity >= creepAttributes.SmallCost && currentEnergyCapacity < creepAttributes.MediumCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)) {
                 //Spawn Small Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.TinyWorth && currentEnergyCapacity < creepAttributes.SmallWorth))
+                || (currentEnergyCapacity >= creepAttributes.TinyCost && currentEnergyCapacity < creepAttributes.SmallCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)) {
                 //Spawn Tiny Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)
             }
             else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.MiniWorth && currentEnergyCapacity < creepAttributes.TinyWorth))
+                || (currentEnergyCapacity >= creepAttributes.MiniCost && currentEnergyCapacity < creepAttributes.TinyCost))
                 && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)) {
                 //Spawn Mini Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)

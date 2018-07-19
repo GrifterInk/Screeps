@@ -1,7 +1,7 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions} from "constants/enum.Actions";
 import { PathStrokes} from "constants/enum.PathStrokes";
-import { creepCommunication } from "utils/utilities.creepCommunication";
+import { actionCommunicate } from "./action.Communicate";
 
 export class actionUpgrade {
     constructor() {
@@ -11,7 +11,9 @@ export class actionUpgrade {
         (creep.memory as CreepMemory).CurrentAction = Actions.Upgrade;
 
         if (creep.upgradeController((creep.room as any).controller) == ERR_NOT_IN_RANGE) {
-            creepCommunication.Talk(creep);
+            let communicate: actionCommunicate = new actionCommunicate();
+            communicate.Execute(creep);
+
             creep.moveTo((creep.room as any).controller, { visualizePathStyle: { stroke: PathStrokes.Upgrade } });
         }
     }

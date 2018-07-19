@@ -3,7 +3,7 @@ import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { arrayFunctions } from "utils/utilities.ArrayFunctions";
-import { creepCommunication } from "utils/utilities.creepCommunication";
+import { actionCommunicate } from "./action.Communicate";
 
 export class actionHarvest {
     constructor() {
@@ -37,7 +37,9 @@ export class actionHarvest {
             //console.log("New Energy Source: [" + (creep.memory as CreepMemory).CurrentEnergySource + "]");
         }
         else if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
-            creepCommunication.Talk(creep);
+            let communicate: actionCommunicate = new actionCommunicate();
+            communicate.Execute(creep);
+
             creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
         }
     }

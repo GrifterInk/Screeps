@@ -1,7 +1,7 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
-import { creepCommunication } from "utils/utilities.creepCommunication";
+import { actionCommunicate } from "./action.Communicate";
 
 export class actionBuild {
     constructor() {
@@ -28,7 +28,9 @@ export class actionBuild {
 
             //console.log(targets[0]);
             if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                creepCommunication.Talk(creep);
+                let communicate: actionCommunicate = new actionCommunicate();
+                communicate.Execute(creep);
+
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.Build } });
             }
         }
