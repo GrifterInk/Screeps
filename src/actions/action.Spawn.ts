@@ -18,58 +18,86 @@ export class actionSpawn {
         let currentEnergyCapacity = this.getEnergyCapacity(spawnPoint);
 
         if (creepAttributes && creepAttributes.MiniCost > 0) {
-            //Logic Tree is basically:
-            //  If you have 0 creeps of role, then spawn the biggest you can at the current time
-            //  If you already have creeps of role, then wait until you have enough energy to create the biggest sized creep your capacity will allow and then create that sized creep
-
-            if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)) {
+            if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth, creepAttributes.MegaCost, 0, currentEnergyCapacity)) {
                 //Spawn Mega Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.JumboCost && currentEnergyCapacity < creepAttributes.MegaCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth, creepAttributes.JumboCost, creepAttributes.MegaCost, currentEnergyCapacity)) {
                 //Spawn Jumbo Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth);
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.LargeCost && currentEnergyCapacity < creepAttributes.JumboCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth, creepAttributes.LargeCost, creepAttributes.JumboCost, currentEnergyCapacity)) {
                 //Spawn Large Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.MediumCost && currentEnergyCapacity < creepAttributes.LargeCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth, creepAttributes.MediumCost, creepAttributes.LargeCost, currentEnergyCapacity)) {
                 //Spawn Medium Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.SmallCost && currentEnergyCapacity < creepAttributes.MediumCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth, creepAttributes.SmallCost, creepAttributes.MediumCost, currentEnergyCapacity)) {
                 //Spawn Small Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.TinyCost && currentEnergyCapacity < creepAttributes.SmallCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth, creepAttributes.TinyCost, creepAttributes.SmallCost, currentEnergyCapacity)) {
                 //Spawn Tiny Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)
             }
-            else if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0
-                || (currentEnergyCapacity >= creepAttributes.MiniCost && currentEnergyCapacity < creepAttributes.TinyCost))
-                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)) {
+            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth, creepAttributes.MiniCost, creepAttributes.TinyCost, currentEnergyCapacity)) {
                 //Spawn Mini Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)
             }
         }
     }
 
+    private canSpawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number, creepSizeCost: number, largerCreepSizeCost: number, currentEnergyCapacity: number) {
+        //Logic Tree is basically:
+        //  If you have 0 creeps of role, then spawn the biggest you can at the current time
+        //  If you already have creeps of role, then wait until you have enough energy to create the biggest sized creep your capacity will allow and then create that sized creep
+        //  BUT...we don't want to have to wait an exceptionally long time, so make sure our current energy is within a certain threshold of largest sized creep
+
+        let fullName: string = targetCreepSize + "-" + creepName;
+        let currentEnergyAvailable = this.getCurrentEnergyAvailable(spawnPoint);
+
+        let threshold: number = 0;
+
+        switch (targetCreepSize) {
+            case CreepSizes.Mega:
+                threshold = .90;
+            case CreepSizes.Jumbo:
+                threshold = .80;
+            case CreepSizes.Large:
+                threshold = .75;
+            case CreepSizes.Medium:
+                threshold = .60;
+            case CreepSizes.Small:
+                threshold = .40;
+            case CreepSizes.Tiny:
+                threshold = .20;
+            case CreepSizes.Mini:
+                threshold = 0;
+        }
+
+        if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0  //if you have 0 creeps, spawn the biggest possible
+            || (largerCreepSizeCost == 0) //Case of attempting to build a Mega creep - can't check the total capacity of the next size up
+            || (currentEnergyCapacity >= creepSizeCost
+                && currentEnergyCapacity < largerCreepSizeCost
+                && currentEnergyAvailable >= Math.ceil(creepSizeCost * threshold))) //Case of checking what total capacity is available as well as checking to make sure we don't have to wait too long
+            && Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory, dryRun: true }) == 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     private getEnergyCapacity(spawnPoint: string) {
         return Game.spawns[spawnPoint].room.energyCapacityAvailable;
     }
 
-    private canSpawnCreepOfSize(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
+    private getCurrentEnergyAvailable(spawnPoint: string) {
+        return Game.spawns[spawnPoint].room.energyAvailable;
+    }
+
+    private canSpawnCreepOfSize2(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, targetCreepSize: CreepSizes, bodyParts: BodyPartConstant[], creepSizeWorth: number) {
         let fullName: string = targetCreepSize + "-" + creepName;
 
         if (Game.spawns[spawnPoint].spawnCreep(bodyParts, fullName, { memory: creepMemory, dryRun: true }) == 0) {
