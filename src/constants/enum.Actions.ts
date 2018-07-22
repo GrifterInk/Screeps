@@ -3,6 +3,8 @@ export enum Actions {
     SupplyEnergy = "⚡ Supply Energy",
     Upgrade = "⚡ Upgrade",
     Build = "🚧 Build",
+    BuildRoad = "🚧 Build Road",
+    BuildWall = "🚧 Build Wall",
     Repair = "🚧 Repair",
     RepairSpawn = "🚧 Repair Spawn",
     RepairTower = "🚧 Repair Tower",

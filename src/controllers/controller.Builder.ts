@@ -45,7 +45,7 @@ export class Builder {
     }
 
     Act(creep: Creep) {
-        //Builder Actions Priority should be: Harvest / Build / Repair Non-Road, Non-Wall Structures / Repair Roads
+        //Builder Actions Priority should be: Harvest / Build (prioritizing non-road / non-wall) / Repair Non-Road, Non-Wall Structures / Repair Roads
         let build: actionBuild = new actionBuild();
         let harvest: actionHarvest = new actionHarvest();
         let repairTower: actionRepairTower = new actionRepairTower();
@@ -100,19 +100,10 @@ export class Builder {
                         || constructionSite.structureType == STRUCTURE_CONTAINER
                 }
             });
-            let constructionSitesSimple = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
-                filter: (constructionSite) => {
-                    return constructionSite.structureType == STRUCTURE_ROAD
-                        || constructionSite.structureType == STRUCTURE_WALL
-                }
-            });
 
             constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
                 currentBuilderNeed += 4;
             });
-            if (constructionSitesSimple.length) {
-                currentBuilderNeed += Math.ceil(constructionSitesSimple.length / 2);
-            }
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepNeed = currentBuilderNeed;

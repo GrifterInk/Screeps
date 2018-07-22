@@ -1,8 +1,3 @@
-. Believe this is currently done - Code out so that creeps aren't built until energy capacities are reached (unless there are currently 0 of that type of creep)
-    - Danger of this is if it builds a really large creep and then has to wait all that time to recollect enough energy for next creep of that size :( - think that makes next step really important!
-    - Also need to consider bots with attack and how long you'd want to wait for them....
-. Code out so that we can specify a min / max creep size to be built - may not want to build tiny+ until we have roads for them to travel on
-
 . Have to add minority roles checking into all of the classes, similar to how upgraders currently have.
 . Switch Road / Wall building to Pavers and Masons away from Builders
 

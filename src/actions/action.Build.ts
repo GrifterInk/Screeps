@@ -37,57 +37,55 @@ export class actionBuild {
     }
 
     private getBuildTarget(creep: Creep) {
-        //quaternary, quinary, senary, septenary, octonary, nonary, and denary
-
-        //Walls get built first, because they are defensive and extremely fast to build
+        //Towers are primary because of the defensive nature
         let constructionSitesPrimary = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_WALL
+                return constructionSite.structureType == STRUCTURE_TOWER
             }
         });
         if (constructionSitesPrimary.length) {
             return constructionSitesPrimary;
         }
 
-        //Towers are secondary because of the defensive nature
+        //Spawns / Extensions are important infrastructure to build
         let constructionSitesSecondary = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_TOWER
+                return constructionSite.structureType == STRUCTURE_SPAWN
+                    || constructionSite.structureType == STRUCTURE_EXTENSION
             }
         });
         if (constructionSitesSecondary.length) {
             return constructionSitesSecondary;
         }
 
-        //Roads are infrastructure that are relatively quick to build
+        //All other types of non-Road / non-Wall build targets are next - use negative cases to make sure we don't accidentally prevent inclusion of something being built
         let constructionSitesTertiary = creep.room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_ROAD
-            }
-        });
-        if (constructionSitesTertiary.length) {
-            return constructionSitesTertiary;
-        }
-
-        //Spawns / Extensions are important infrastructure to build
-        let constructionSitesQuaternary = creep.room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_SPAWN
-                    || constructionSite.structureType == STRUCTURE_EXTENSION
-            }
-        });
-        if (constructionSitesQuaternary.length) {
-            return constructionSitesQuaternary;
-        }
-
-        //All other types of build targets are next - use negative cases to make sure we don't accidentally prevent inclusion of something being built
-        let constructionSitesQuinary = creep.room.find(FIND_CONSTRUCTION_SITES, {
             filter: (constructionSite) => {
                 return constructionSite.structureType != STRUCTURE_WALL
                     && constructionSite.structureType != STRUCTURE_TOWER
                     && constructionSite.structureType != STRUCTURE_ROAD
                     && constructionSite.structureType != STRUCTURE_SPAWN
                     && constructionSite.structureType != STRUCTURE_EXTENSION
+            }
+        });
+        if (constructionSitesTertiary.length) {
+            return constructionSitesTertiary;
+        }
+
+        //Roads are infrastructure that are relatively quick to build
+        let constructionSitesQuaternary = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_ROAD
+            }
+        });
+        if (constructionSitesQuaternary.length) {
+            return constructionSitesQuaternary;
+        }
+
+        //Walls are last
+        let constructionSitesQuinary = creep.room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_WALL
             }
         });
         if (constructionSitesQuinary.length) {

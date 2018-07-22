@@ -10,6 +10,7 @@ import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { actionSpawn } from "actions/action.Spawn";
+import { actionBuildWall } from "actions/action.BuildWall";
 
 export class Mason {
     MasonAttributes: MasonAttributes = new MasonAttributes();
@@ -42,8 +43,9 @@ export class Mason {
     }
 
     Act(creep: Creep) {
-        //Mason Actions Priority should be: Harvest / Repair Walls / Repair Non-Road / Non-Wall Structures / Upgrade
+        //Mason Actions Priority should be: Harvest / Build New Walls / Repair Walls / Repair Non-Road / Non-Wall Structures / Upgrade
         let harvest: actionHarvest = new actionHarvest();
+        let buildWall: actionBuildWall = new actionBuildWall();
         let repairTower: actionRepairTower = new actionRepairTower();
         let repairSpawn: actionRepairSpawn = new actionRepairSpawn();
         let repairExtension: actionRepairExtension = new actionRepairExtension();
@@ -52,6 +54,9 @@ export class Mason {
 
         if (harvest.IsNecessary(creep)) {
             harvest.Execute(creep);
+        }
+        else if (buildWall.IsNecessary(creep)){
+            buildWall.Execute(creep);
         }
         else if (repairWall.IsNecessary(creep)) {
             repairWall.Execute(creep);
@@ -74,7 +79,19 @@ export class Mason {
     }
 
     private getCurrentMasonsNeed(spawnPoint: string) {
-        let currentMasonNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Mason to be available.
+        let currentMasonsNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Mason to be available.
+
+
+        let wallsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
+            filter: (constructionSite) => {
+                return constructionSite.structureType == STRUCTURE_WALL
+            }
+        });
+
+        if (wallsNeedingToBeBuilt.length) {
+            currentMasonsNeed += Math.ceil(wallsNeedingToBeBuilt.length / 2);
+        }
+
 
         let wallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
@@ -83,11 +100,11 @@ export class Mason {
         });
 
         if (wallsNeedingRepair.length) {
-            currentMasonNeed = wallsNeedingRepair.length;
+            currentMasonsNeed += wallsNeedingRepair.length;
         }
 
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonNeed;
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonsNeed;
 
-        return currentMasonNeed;
+        return currentMasonsNeed;
     }
 };

@@ -11,6 +11,7 @@ import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { Mason } from "./controller.Mason";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { actionSpawn } from "actions/action.Spawn";
+import { actionBuildRoad } from "actions/action.BuildRoad";
 
 export class Paver {
     PaverAttributes: PaverAttributes = new PaverAttributes();
@@ -43,8 +44,9 @@ export class Paver {
     }
 
     Act(creep: Creep) {
-        //Paver Actions Priority should be: Harvest / Repair Roads / Repair Non-Road / Non-Wall Structures / Upgrade
+        //Paver Actions Priority should be: Harvest / Build New Roads / Repair Roads / Repair Non-Road / Non-Wall Structures / Upgrade
         let harvest: actionHarvest = new actionHarvest();
+        let buildRoad: actionBuildRoad = new actionBuildRoad();
         let repairTower: actionRepairTower = new actionRepairTower();
         let repairSpawn: actionRepairSpawn = new actionRepairSpawn();
         let repairExtension: actionRepairExtension = new actionRepairExtension();
@@ -53,6 +55,9 @@ export class Paver {
 
         if (harvest.IsNecessary(creep)) {
             harvest.Execute(creep);
+        }
+        else if (buildRoad.IsNecessary(creep)){
+            buildRoad.Execute(creep);
         }
         else if (repairRoad.IsNecessary(creep)) {
             repairRoad.Execute(creep);
@@ -83,6 +88,16 @@ export class Paver {
         if (CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver) == 0
             || !mason.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason) > 0) {
 
+            let roadsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (constructionSite) => {
+                    return constructionSite.structureType == STRUCTURE_ROAD
+                }
+            });
+
+            if (roadsNeedingToBeBuilt.length) {
+                currentPaversNeed += Math.ceil(roadsNeedingToBeBuilt.length / 2);
+            }
+
             let roadsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax;
@@ -91,7 +106,7 @@ export class Paver {
 
             //We're going to say we need 1 paver for every 10 roads that need repairing.
             if (roadsNeedingRepair.length) {
-                currentPaversNeed = Math.ceil(roadsNeedingRepair.length / 20);
+                currentPaversNeed += Math.ceil(roadsNeedingRepair.length / 20);
             }
         }
 
