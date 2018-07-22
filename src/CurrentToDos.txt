@@ -1,6 +1,3 @@
-. Have to add minority roles checking into all of the classes, similar to how upgraders currently have.
-. Switch Road / Wall building to Pavers and Masons away from Builders
-
 . Code Attack / Defense Actions and Roles
 
 . Code Bot Naming

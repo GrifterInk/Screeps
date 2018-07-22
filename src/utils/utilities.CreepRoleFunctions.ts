@@ -18,14 +18,19 @@ export class CreepRoleFunctions {
         switch (creepRole) {
             case Roles.Butler:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Butlers.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
             case Roles.Upgrader:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Upgraders.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
             case Roles.Builder:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
             case Roles.Paver:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
             case Roles.Mason:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
         }
 
         return currentCreepsInRoleCount;
@@ -45,14 +50,19 @@ export class CreepRoleFunctions {
         switch (creepRole) {
             case Roles.Butler:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Butlers.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
             case Roles.Upgrader:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Upgraders.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
             case Roles.Builder:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
             case Roles.Paver:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Pavers.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
             case Roles.Mason:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
         }
 
         return currentCreepsInRoleWorth;
