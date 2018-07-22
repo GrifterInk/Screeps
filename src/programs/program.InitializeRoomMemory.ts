@@ -4,6 +4,7 @@ import { Roles } from "constants/enum.Roles";
 import { RoomMemoryRoleInformation } from "interfaces/interface.RoomMemoryRoleInformation";
 import { Butler } from "controllers/controller.Butler";
 import { Builder } from "controllers/controller.Builder";
+import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
 
 export class programInitializeRoomMemory {
     constructor() {
@@ -21,6 +22,8 @@ export class programInitializeRoomMemory {
                 (room.memory as RoomMemory).CurrentEnergySource = [];
                 (room.memory as RoomMemory).CurrentRoleBuildPriority = Roles.Butler;
                 (room.memory as RoomMemory).CurrentAllies = [];
+                (room.memory as RoomMemory).CurrentMinCreepSizeRank = CreepSizeRanks.Mini;
+                (room.memory as RoomMemory).CurrentMaxCreepSizeRank = CreepSizeRanks.Mega;
                 (room.memory as RoomMemory).Butlers = {
                     CurrentCreepCount: 0,
                     CurrentCreepNeed: 0,

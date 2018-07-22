@@ -1,6 +1,7 @@
 import { Roles } from "constants/enum.Roles";
 import { RoomGameStates } from "constants/enum.RoomGameStates";
 import { RoomMemoryRoleInformation } from "./interface.RoomMemoryRoleInformation";
+import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
 
 //Example console command to adjusting RoomMemory manually:
 //Memory.rooms.[roomname].CurrentEnergySource = 0;
@@ -9,6 +10,8 @@ export interface RoomMemory {
     CurrentGameState: RoomGameStates;
     CurrentRoleBuildPriority: Roles;
     CurrentAllies: string[];
+    CurrentMinCreepSizeRank: CreepSizeRanks;
+    CurrentMaxCreepSizeRank: CreepSizeRanks;
     Butlers: RoomMemoryRoleInformation;
     Builders: RoomMemoryRoleInformation;
     Pavers: RoomMemoryRoleInformation;

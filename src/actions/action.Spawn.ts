@@ -8,6 +8,8 @@ import { RoleAttributes } from "interfaces/interface.RoleAttributes";
 import { PaverAttributes } from "attributes/class.PaverAttributes";
 import { MasonAttributes } from "attributes/class.MasonAttributes";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
 
 export class actionSpawn {
     constructor() {
@@ -16,33 +18,41 @@ export class actionSpawn {
     Execute(spawnPoint: string, creepName: string, creepMemory: CreepMemory, creepRole: Roles, currentNumberOfCreepsInRole: number) {
         let creepAttributes = this.getRoleAttributes(creepRole);
         let currentEnergyCapacity = this.getEnergyCapacity(spawnPoint);
+        let roomMemory: RoomMemory = (Game.spawns[spawnPoint].room.memory as RoomMemory);
 
         if (creepAttributes && creepAttributes.MiniCost > 0) {
-            if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth, creepAttributes.MegaCost, 0, currentEnergyCapacity)) {
+            if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Mega && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Mega
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth, creepAttributes.MegaCost, 0, currentEnergyCapacity)) {
                 //Spawn Mega Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mega, creepAttributes.Mega, creepAttributes.MegaWorth)
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth, creepAttributes.JumboCost, creepAttributes.MegaCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Jumbo && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Jumbo
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth, creepAttributes.JumboCost, creepAttributes.MegaCost, currentEnergyCapacity)) {
                 //Spawn Jumbo Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Jumbo, creepAttributes.Jumbo, creepAttributes.JumboWorth);
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth, creepAttributes.LargeCost, creepAttributes.JumboCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Large && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Large
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth, creepAttributes.LargeCost, creepAttributes.JumboCost, currentEnergyCapacity)) {
                 //Spawn Large Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Large, creepAttributes.Large, creepAttributes.LargeWorth)
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth, creepAttributes.MediumCost, creepAttributes.LargeCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Medium && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Medium
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth, creepAttributes.MediumCost, creepAttributes.LargeCost, currentEnergyCapacity)) {
                 //Spawn Medium Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Medium, creepAttributes.Medium, creepAttributes.MediumWorth)
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth, creepAttributes.SmallCost, creepAttributes.MediumCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Small && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Small
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth, creepAttributes.SmallCost, creepAttributes.MediumCost, currentEnergyCapacity)) {
                 //Spawn Small Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Small, creepAttributes.Small, creepAttributes.SmallWorth)
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth, creepAttributes.TinyCost, creepAttributes.SmallCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Tiny && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Tiny
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth, creepAttributes.TinyCost, creepAttributes.SmallCost, currentEnergyCapacity)) {
                 //Spawn Tiny Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Tiny, creepAttributes.Tiny, creepAttributes.TinyWorth)
             }
-            else if (this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth, creepAttributes.MiniCost, creepAttributes.TinyCost, currentEnergyCapacity)) {
+            else if (roomMemory.CurrentMinCreepSizeRank <= CreepSizeRanks.Mini && roomMemory.CurrentMaxCreepSizeRank >= CreepSizeRanks.Mini
+                && this.canSpawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth, creepAttributes.MiniCost, creepAttributes.TinyCost, currentEnergyCapacity)) {
                 //Spawn Mini Creep
                 this.spawnCreepOfSize(spawnPoint, creepName, creepMemory, creepRole, CreepSizes.Mini, creepAttributes.Mini, creepAttributes.MiniWorth)
             }
