@@ -95,6 +95,12 @@ export class actionSpawn {
                 break;
         }
 
+        //SpawnPoints stop generating their own energy if the total energy stored in the room is > 300...
+        //  so, can't wait on it to finish if within threshold but not yet at target value
+        if(currentEnergyAvailable > 300 && currentEnergyAvailable < currentEnergyCapacity){
+            currentEnergyCapacity = currentEnergyCapacity - (300 - Game.spawns[spawnPoint].energy);
+        }
+
         if (roomMemory.CurrentMinCreepSizeRank <= currentCreepSizeRank && roomMemory.CurrentMaxCreepSizeRank >= currentCreepSizeRank) {
             if ((CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, creepRole) == 0  //if you have 0 creeps, spawn the biggest possible
                 || (largerCreepSizeCost == 0) //Case of attempting to build a Mega creep - can't check the total capacity of the next size up
