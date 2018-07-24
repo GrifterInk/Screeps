@@ -6,31 +6,31 @@ export class ButlerAttributes implements RoleAttributes {
     MiniCost = 200;
     MiniWorth = 1;
 
-    //Tiny Butler: 2 WORK / 2 CARRY / 1 MOVE Total Cost: 350 Energy for 5 total parts
+    //Tiny Butler: 2 WORK / 2 CARRY / 2 MOVE Total Cost: 400 Energy for 6 total parts
     Tiny = [
         WORK, WORK,
         CARRY, CARRY,
-        MOVE
+        MOVE, MOVE
     ];
-    TinyCost = 350;
+    TinyCost = 400;
     TinyWorth = 2;
 
-    //Small Butler: 4 WORK / 4 CARRY / 2 MOVE Total Cost: 700 Energy for 10 total parts
+    //Small Butler: 4 WORK / 4 CARRY / 4 MOVE Total Cost: 800 Energy for 12 total parts
     Small = [
         WORK, WORK, WORK, WORK,
         CARRY, CARRY, CARRY, CARRY,
-        MOVE, MOVE
+        MOVE, MOVE, MOVE, MOVE
     ];
-    SmallCost = 700;
+    SmallCost = 800;
     SmallWorth = 3;
 
-    //Medium Butler: 6 WORK / 8 CARRY / 4 MOVE Total Cost: 1200 Energy for 18 total parts
+    //Medium Butler: 6 WORK / 8 CARRY / 6 MOVE Total Cost: 1300 Energy for 20 total parts
     Medium = [
         WORK, WORK, WORK, WORK, WORK, WORK,
         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-        MOVE, MOVE, MOVE, MOVE
+        MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
-    MediumCost = 1200;
+    MediumCost = 1300;
     MediumWorth = 6;
 
     //Large Butler: 8 WORK / 12 CARRY / 5 TOUGH / 6 MOVE Total Cost: 1750 Energy for 31 total parts

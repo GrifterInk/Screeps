@@ -6,32 +6,32 @@ export class BuilderAttributes implements RoleAttributes {
     MiniCost = 200;
     MiniWorth = 1;
 
-    //Tiny Builder: 2 WORK / 2 CARRY / 1 MOVE Total Cost: 350 Energy for 5 total parts
+    //Tiny Builder: 2 WORK / 2 CARRY / 2 MOVE Total Cost: 400 Energy for 6 total parts
     Tiny = [
         WORK, WORK,
         CARRY, CARRY,
-        MOVE
+        MOVE, MOVE
     ];
-    TinyCost = 350;
-    TinyWorth = 1;
+    TinyCost = 400;
+    TinyWorth = 2;
 
-    //Small Builder: 4 WORK / 4 CARRY / 2 MOVE Total Cost: 700 Energy for 10 total parts
+    //Small Builder: 4 WORK / 4 CARRY / 4 MOVE Total Cost: 800 Energy for 12 total parts
     Small = [
         WORK, WORK, WORK, WORK,
         CARRY, CARRY, CARRY, CARRY,
-        MOVE, MOVE
+        MOVE, MOVE, MOVE, MOVE
     ];
-    SmallCost = 700;
-    SmallWorth = 2;
+    SmallCost = 800;
+    SmallWorth = 3;
 
-    //Medium Builder: 6 WORK / 8 CARRY / 4 MOVE Total Cost: 1200 Energy for 18 total parts
+    //Medium Builder: 6 WORK / 8 CARRY / 6 MOVE Total Cost: 1300 Energy for 20 total parts
     Medium = [
         WORK, WORK, WORK, WORK, WORK, WORK,
         CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY,
-        MOVE, MOVE, MOVE, MOVE
+        MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
-    MediumCost = 1200;
-    MediumWorth = 2;
+    MediumCost = 1300;
+    MediumWorth = 4;
 
     //Large Builder: 8 WORK / 12 CARRY / 5 TOUGH / 6 MOVE Total Cost: 1750 Energy for 31 total parts
     Large = [
@@ -41,7 +41,7 @@ export class BuilderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     LargeCost = 1750;
-    LargeWorth = 2;
+    LargeWorth = 5;
 
     //Jumbo Builder: 10 WORK / 16 CARRY / 10 TOUGH / 8 MOVE Total Cost: 2300 Energy for 44 total parts
     Jumbo = [
@@ -51,7 +51,7 @@ export class BuilderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     JumboCost = 2300;
-    JumboWorth = 3;
+    JumboWorth = 6;
 
     //Mega Builder: 12 WORK / 18 CARRY / 10 TOUGH / 10 MOVE Total Cost: 2700 Energy for 50 total parts
     Mega = [
@@ -61,7 +61,7 @@ export class BuilderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     MegaCost = 2700;
-    MegaWorth = 3;
+    MegaWorth = 7;
 }
 
 // BODYPART_COST: {
