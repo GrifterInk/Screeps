@@ -5,7 +5,7 @@ export class actionCommunicate {
     }
 
     Execute(creep: Creep){
-        var random = Math.floor(Math.random() * 10);  //Want them typically not saying anything
+        var random = Math.floor(Math.random() * 100);  //Want them typically not saying anything
 
         if(random === 0){
             creep.say(creep.name);

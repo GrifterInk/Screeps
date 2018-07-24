@@ -13,7 +13,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE
     ];
     TinyCost = 350;
-    TinyWorth = 1;
+    TinyWorth = 2;
 
     //Small Upgrader: 4 WORK / 4 CARRY / 2 MOVE Total Cost: 700 Energy for 10 total parts
     Small = [
@@ -22,7 +22,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE, MOVE
     ];
     SmallCost = 700;
-    SmallWorth = 1;
+    SmallWorth = 3;
 
     //Medium Upgrader: 6 WORK / 8 CARRY / 4 MOVE Total Cost: 1200 Energy for 18 total parts
     Medium = [
@@ -31,7 +31,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE
     ];
     MediumCost = 1200;
-    MediumWorth = 2;
+    MediumWorth = 4;
 
     //Large Upgrader: 8 WORK / 12 CARRY / 5 TOUGH / 6 MOVE Total Cost: 1750 Energy for 31 total parts
     Large = [
@@ -41,7 +41,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     LargeCost = 1750;
-    LargeWorth = 2;
+    LargeWorth = 5;
 
     //Jumbo Upgrader: 10 WORK / 16 CARRY / 10 TOUGH / 8 MOVE Total Cost: 2300 Energy for 44 total parts
     Jumbo = [
@@ -51,7 +51,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     JumboCost = 2300;
-    JumboWorth = 3;
+    JumboWorth = 6;
 
     //Mega Upgrader: 12 WORK / 18 CARRY / 10 TOUGH / 10 MOVE Total Cost: 2700 Energy for 50 total parts
     Mega = [
@@ -61,7 +61,7 @@ export class UpgraderAttributes implements RoleAttributes {
         MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
     ];
     MegaCost = 2700;
-    MegaWorth = 3;
+    MegaWorth = 7;
 }
 
 // BODYPART_COST: {

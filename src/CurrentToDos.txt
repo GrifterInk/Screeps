@@ -1,3 +1,15 @@
+Spawns STOP Producing energy if room total is > 300!!!  Ugh.  How to work that in...
+
 . Code Attack / Defense Actions and Roles
 
 . Code Bot Naming
+
+
+
+//USEFUL MEMORY COMMANDS
+
+
+Memory.rooms.E54S42.CurrentEnergySource = [0];
+
+
+ Memory.rooms.sim.CurrentMaxCreepSizeRank = 1;

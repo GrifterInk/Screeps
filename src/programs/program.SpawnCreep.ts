@@ -21,19 +21,27 @@ export class programSpawnCreep {
             let paver: Paver = new Paver();
             let mason: Mason = new Mason();
 
-            if (butler.NeedToSpawn(spawnPoint)) {
+            //Note: Call each of the NeedToSpawn's in order to populate ALL memory -
+            //      without this, only the ones that need to actually spawn and above get called / populated
+            let butlerNeedToSpawn = butler.NeedToSpawn(spawnPoint);
+            let upgraderNeedToSpawn = upgrader.NeedToSpawn(spawnPoint);
+            let builderNeedToSpawn = builder.NeedToSpawn(spawnPoint);
+            let paverNeedToSpawn = paver.NeedToSpawn(spawnPoint);
+            let masonNeedToSpawn = mason.NeedToSpawn(spawnPoint);
+
+            if (butlerNeedToSpawn) {
                 butler.Spawn(spawnPoint);
             }
-            else if (upgrader.NeedToSpawn(spawnPoint)) {
+            else if (upgraderNeedToSpawn) {
                 upgrader.Spawn(spawnPoint);
             }
-            else if (builder.NeedToSpawn(spawnPoint)){
+            else if (builderNeedToSpawn){
                 builder.Spawn(spawnPoint);
             }
-            else if (paver.NeedToSpawn(spawnPoint)){
+            else if (paverNeedToSpawn){
                 paver.Spawn(spawnPoint);
             }
-            else if (mason.NeedToSpawn(spawnPoint)){
+            else if (masonNeedToSpawn){
                 mason.Spawn(spawnPoint);
             }
 
