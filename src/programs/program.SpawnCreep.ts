@@ -59,7 +59,7 @@ export class programSpawnCreep {
                 }
             }
             else{
-                console.log("Self Imposed Max Creep Limit is currently hit!  No new creeps will spawn!");
+                //console.log("Self Imposed Max Creep Limit is currently hit!  No new creeps will spawn!");
             }
         });
     }
