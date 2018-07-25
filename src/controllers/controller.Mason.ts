@@ -99,7 +99,7 @@ export class Mason {
         });
 
         if (primaryWallsNeedingRepair.length) {
-            currentMasonsNeed += primaryWallsNeedingRepair.length / 2;
+            currentMasonsNeed += Math.ceil(primaryWallsNeedingRepair.length / 2);
         }
 
         let secondaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
@@ -109,7 +109,7 @@ export class Mason {
         });
 
         if (secondaryWallsNeedingRepair.length) {
-            currentMasonsNeed += secondaryWallsNeedingRepair.length / 5;
+            currentMasonsNeed += Math.ceil(secondaryWallsNeedingRepair.length / 5);
         }
 
         let tertiaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
@@ -119,7 +119,7 @@ export class Mason {
         });
 
         if (tertiaryWallsNeedingRepair.length) {
-            currentMasonsNeed += tertiaryWallsNeedingRepair.length / 20;
+            currentMasonsNeed += Math.ceil(tertiaryWallsNeedingRepair.length / 20);
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonsNeed;
