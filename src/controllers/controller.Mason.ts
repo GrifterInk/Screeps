@@ -89,18 +89,37 @@ export class Mason {
         });
 
         if (wallsNeedingToBeBuilt.length) {
-            currentMasonsNeed += Math.ceil(wallsNeedingToBeBuilt.length / 2);
+            currentMasonsNeed += Math.ceil(wallsNeedingToBeBuilt.length / 10);
         }
 
-
-        let wallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+        let primaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
             filter: (structure) => {
-                return structure.structureType == STRUCTURE_WALL && structure.hits < structure.hitsMax;
+                return structure.structureType == STRUCTURE_WALL && structure.hits <= 1000;
             }
         });
 
-        if (wallsNeedingRepair.length) {
-            currentMasonsNeed += wallsNeedingRepair.length;
+        if (primaryWallsNeedingRepair.length) {
+            currentMasonsNeed += primaryWallsNeedingRepair.length / 2;
+        }
+
+        let secondaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits > 1000 && structure.hits <= 100000;
+            }
+        });
+
+        if (secondaryWallsNeedingRepair.length) {
+            currentMasonsNeed += secondaryWallsNeedingRepair.length / 5;
+        }
+
+        let tertiaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return structure.structureType == STRUCTURE_WALL && structure.hits > 100000 && structure.hits < structure.hitsMax;
+            }
+        });
+
+        if (tertiaryWallsNeedingRepair.length) {
+            currentMasonsNeed += tertiaryWallsNeedingRepair.length / 20;
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonsNeed;
