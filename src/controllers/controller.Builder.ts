@@ -13,6 +13,7 @@ import { Paver } from "./controller.Paver";
 import { Mason } from "./controller.Mason";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { actionSpawn } from "actions/action.Spawn";
+import { actionRepairRampart } from "actions/action.RepairRampart";
 
 export class Builder {
     BuilderAttributes: BuilderAttributes = new BuilderAttributes();
@@ -51,6 +52,7 @@ export class Builder {
         let repairTower: actionRepairTower = new actionRepairTower();
         let repairSpawn: actionRepairSpawn = new actionRepairSpawn();
         let repairExtension: actionRepairExtension = new actionRepairExtension();
+        let repairRampart: actionRepairRampart = new actionRepairRampart();
         let repairRoad: actionRepairRoad = new actionRepairRoad();
         let repairWall: actionRepairWall = new actionRepairWall();
 
@@ -70,6 +72,9 @@ export class Builder {
             }
             else if (repairExtension.IsNecessary(creep)) {
                 repairExtension.Execute(creep);
+            }
+            else if (repairRampart.IsNecessary(creep)) {
+                repairRampart.Execute(creep);
             }
             else if (repairRoad.IsNecessary(creep)) {
                 repairRoad.Execute(creep);
@@ -97,7 +102,7 @@ export class Builder {
                 }
             });
 
-            console.log("Constructions Sites: " + constructionSitesAdvanced.length);
+            //console.log("Constructions Sites: " + constructionSitesAdvanced.length);
             constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
                 currentBuilderNeed += 4;
             });

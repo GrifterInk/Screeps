@@ -12,6 +12,7 @@ export interface RoomMemory {
     CurrentAllies: string[];
     CurrentMinCreepSizeRank: CreepSizeRanks;
     CurrentMaxCreepSizeRank: CreepSizeRanks;
+    CurrentMaxCreeps: number;
     Butlers: RoomMemoryRoleInformation;
     Builders: RoomMemoryRoleInformation;
     Pavers: RoomMemoryRoleInformation;
