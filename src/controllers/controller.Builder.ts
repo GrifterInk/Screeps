@@ -92,15 +92,12 @@ export class Builder {
             || !mason.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason) > 0) {
             let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (constructionSite) => {
-                    return constructionSite.structureType == STRUCTURE_SPAWN
-                        || constructionSite.structureType == STRUCTURE_TOWER
-                        || constructionSite.structureType == STRUCTURE_STORAGE
-                        || constructionSite.structureType == STRUCTURE_EXTENSION
-                        || constructionSite.structureType == STRUCTURE_LAB
-                        || constructionSite.structureType == STRUCTURE_CONTAINER
+                    return constructionSite.structureType != STRUCTURE_ROAD
+                        && constructionSite.structureType != STRUCTURE_WALL
                 }
             });
 
+            console.log("Constructions Sites: " + constructionSitesAdvanced.length);
             constructionSitesAdvanced.forEach(constructionSiteAdvanced => {
                 currentBuilderNeed += 4;
             });
