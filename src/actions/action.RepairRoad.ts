@@ -32,6 +32,8 @@ export class actionRepairRoad {
         });
 
         if (structuresToRepair.length) {
+            structuresToRepair.sort(function(a, b)  {return a.hits - b.hits}); //Sorts so roads with lowest remaining hits are prioritized highest!
+
             (creep.memory as CreepMemory).CurrentAction = Actions.Build;
 
             if (creep.repair(structuresToRepair[0]) == ERR_NOT_IN_RANGE) {
