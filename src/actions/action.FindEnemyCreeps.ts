@@ -1,4 +1,5 @@
 import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { EnemyFindingPriorities } from "constants/enum.EnemyFindingPriorities";
 
 export class actionFindEnemies {
     constructor() {
@@ -6,7 +7,7 @@ export class actionFindEnemies {
 
     IsNecessary(creep: Creep) {
         let roomMemory: RoomMemory = (creep.room.memory as RoomMemory);
-        var enemies = creep.room.find(FIND_HOSTILE_CREEPS, {
+        let enemies: Creep[] = creep.room.find(FIND_HOSTILE_CREEPS, {
             filter: (hostileCreep) => {
                 return !roomMemory.CurrentAllies.includes(hostileCreep.owner.username);
             }
@@ -19,16 +20,35 @@ export class actionFindEnemies {
         return false;
     }
 
-    Execute(creep: Creep) {
+    Execute(creep: Creep, priority: EnemyFindingPriorities) {
         let roomMemory: RoomMemory = (creep.room.memory as RoomMemory);
-        var enemies = creep.room.find(FIND_HOSTILE_CREEPS, {
+        let enemies: Creep[] = creep.room.find(FIND_HOSTILE_CREEPS, {
             filter: (hostileCreep) => {
                 return !roomMemory.CurrentAllies.includes(hostileCreep.owner.username);
             }
         });
 
-        //TODO: Pass a parameter that says to find the closest or the weakest or the strongest and add that to the filter based on what is passed in.
+        if (priority == EnemyFindingPriorities.Nearest) {
+            enemies = _.sortBy(enemies, e => creep.pos.getRangeTo(e));
+        }
+        else if (priority == EnemyFindingPriorities.LowestHealth) {
+            enemies.sort(function (a, b) { return a.hits - b.hits }); //Sorts so enemies with lowest remaining hits are prioritized first!
+        }
+        else if (priority == EnemyFindingPriorities.HighestHealth) {
+            enemies.sort(function (a, b) { return b.hits - a.hits }); //Sorts so enemies with highest remaining hits are prioritized first!
+        }
 
         return enemies;
+    }
+
+    ExecuteAsStructure(tower: Structure) {
+        let roomMemory: RoomMemory = (tower.room.memory as RoomMemory);
+        var nearestEnemy = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+            filter: (hostileCreep) => {
+                return !roomMemory.CurrentAllies.includes(hostileCreep.owner.username);
+            }
+        });
+
+        return nearestEnemy;
     }
 };

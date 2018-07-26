@@ -1,4 +1,6 @@
-Spawns STOP Producing energy if room total is > 300!!!  Ugh.  How to work that in...
+. Make code more efficient - things like saving paths and reusing them
+
+. Make code completely AI only - have to figure out how to build structures and where
 
 . Code Attack / Defense Actions and Roles
 

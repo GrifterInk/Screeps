@@ -1,3 +1,5 @@
+import { actionFindEnemies } from "actions/action.FindEnemyCreeps";
+
 export class Tower {
     constructor() {
 
@@ -13,9 +15,12 @@ export class Tower {
         if (towers.length) {
             towers.forEach(structure => {
                 let tower: StructureTower = (structure as StructureTower);
-                var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                if (closestHostile) {
-                    tower.attack(closestHostile);
+                let findEnemies: actionFindEnemies = new actionFindEnemies();
+
+                let nearestEnemy = findEnemies.ExecuteAsStructure(structure);
+
+                if (nearestEnemy) {
+                    tower.attack(nearestEnemy);
                 }
             });
         }
