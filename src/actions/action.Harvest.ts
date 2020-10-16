@@ -11,7 +11,7 @@ export class actionHarvest {
 
     IsNecessary(creep: Creep) {
         if (creep.carry.energy == creep.carryCapacity) {
-            (creep.memory as CreepMemory).CurrentEnergySource = -1;
+            (creep.memory as CreepMemory).CurrentEnergySource = null;
             //console.log("No Need to Harvest");
             return false;
         }
@@ -27,44 +27,55 @@ export class actionHarvest {
         (creep.memory as CreepMemory).CurrentAction = Actions.Harvest;
 
         var sources = creep.room.find(FIND_SOURCES);
-        this.determineCurrentEnergySource(creep, sources.length);
+        this.determineCurrentEnergySource(creep, sources.length, true); //Try finding Closest first
 
-        //Logic to keep creeps from attempting to get energy from a source they cannot reach, includes mechanism to keep from infinite looping
-        if (creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource].pos) == ERR_NO_PATH) {
-            //console.log("Desired Source [" + (creep.memory as CreepMemory).CurrentEnergySource + "] is unable to be reached!  Determining new Energy Source");
-            (creep.memory as CreepMemory).CurrentEnergySource = -1;
-            this.determineCurrentEnergySource(creep, sources.length);
-            //console.log("New Energy Source: [" + (creep.memory as CreepMemory).CurrentEnergySource + "]");
-        }
-        else if (creep.harvest(sources[(creep.memory as CreepMemory).CurrentEnergySource]) == ERR_NOT_IN_RANGE) {
-            let communicate: actionCommunicate = new actionCommunicate();
-            communicate.Execute(creep);
+        let currentEnergySource: Source | null = (creep.memory as CreepMemory).CurrentEnergySource;
 
-            creep.moveTo(sources[(creep.memory as CreepMemory).CurrentEnergySource], { visualizePathStyle: { stroke: PathStrokes.Harvest } });
+        if (currentEnergySource) {
+            //Logic to keep creeps from attempting to get energy from a source they cannot reach, includes mechanism to keep from infinite looping
+            if (creep.moveTo(currentEnergySource.pos) == ERR_NO_PATH) {
+                //console.log("Desired Source [" + (creep.memory as CreepMemory).CurrentEnergySource + "] is unable to be reached!  Determining new Energy Source");
+                (creep.memory as CreepMemory).CurrentEnergySource = null;
+                this.determineCurrentEnergySource(creep, sources.length, false); //If closest is blocked, try random
+                //console.log("New Energy Source: [" + (creep.memory as CreepMemory).CurrentEnergySource + "]");
+            }
+            else if (creep.harvest(currentEnergySource) == ERR_NOT_IN_RANGE) {
+                let communicate: actionCommunicate = new actionCommunicate();
+                communicate.Execute(creep);
+
+                creep.moveTo(currentEnergySource, { visualizePathStyle: { stroke: PathStrokes.Harvest } });
+            }
         }
     }
 
-    private determineCurrentEnergySource(creep: Creep, numberOfSources: number) {
-        if (!(creep.room.memory as RoomMemory).CurrentEnergySource.length) { //Room is currently set to pull randomly from its energy sources
-            if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
-                var randomSourceID = Math.floor(Math.random() * numberOfSources);
-
-                //Weighting source to 0 because it has more ports open
-                //console.log("Random Source ID: " + randomSourceID + " Source Length: " + sources.length + 3);
-                // if (randomSourceID > 0) {
-                //     randomSourceID = 0;
-                // }
-                // else {
-                //     randomSourceID = 1;
-                // }
-
-                (creep.memory as CreepMemory).CurrentEnergySource = randomSourceID;
-                //console.log("Current Energy Source: " + (creep.memory as CreepMemory).CurrentEnergySource);
-            }
+    private determineCurrentEnergySource(creep: Creep, numberOfSources: number, useClosest: boolean) {
+        var sources = creep.room.find(FIND_SOURCES_ACTIVE);
+        if (useClosest) {
+            var closestSource = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            (creep.memory as CreepMemory).CurrentEnergySource = closestSource;
         }
-        else { //Room is set to use a specific energy source via Memory
-            if ((creep.memory as CreepMemory).CurrentEnergySource == -1) {
-                (creep.memory as CreepMemory).CurrentEnergySource = arrayFunctions.GetRandomValueFromArray((creep.room.memory as RoomMemory).CurrentEnergySource);
+        else {
+            if (!(creep.room.memory as RoomMemory).CurrentEnergySource.length) { //Room is currently set to pull randomly from its energy sources
+                if ((creep.memory as CreepMemory).CurrentEnergySource == null) {
+                    var randomSourceID = Math.floor(Math.random() * numberOfSources);
+
+                    //Weighting source to 0 because it has more ports open
+                    //console.log("Random Source ID: " + randomSourceID + " Source Length: " + sources.length + 3);
+                    // if (randomSourceID > 0) {
+                    //     randomSourceID = 0;
+                    // }
+                    // else {
+                    //     randomSourceID = 1;
+                    // }
+
+                    (creep.memory as CreepMemory).CurrentEnergySource = sources[randomSourceID];
+                    //console.log("Current Energy Source: " + (creep.memory as CreepMemory).CurrentEnergySource);
+                }
+            }
+            else { //Room is set to use a specific energy source via Memory
+                if ((creep.memory as CreepMemory).CurrentEnergySource == null) {
+                    (creep.memory as CreepMemory).CurrentEnergySource = sources[arrayFunctions.GetRandomValueFromArray((creep.room.memory as RoomMemory).CurrentEnergySource)];
+                }
             }
         }
     }
