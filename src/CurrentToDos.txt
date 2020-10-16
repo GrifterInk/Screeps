@@ -1,4 +1,10 @@
+. Action.Harvest, if possible, instead of randomly choosing a source, should look at closest source and see if it's got an open spot.  If so, use it, if not, go to next closest and repeat until an open spot is found.
+
+. Consider a "Planner" role that prioritizes creating construction sites (Roads/Towers/Walls/etc.)
+. Action.PlanRoad (for Pavers) - if possible, should visualize a path from one structure to another, and if there are spots without road and without road construction site, it should place a road construction site.
+
 . Make code more efficient - things like saving paths and reusing them
+
 
 . Make code completely AI only - have to figure out how to build structures and where
 

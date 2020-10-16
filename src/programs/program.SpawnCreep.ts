@@ -11,10 +11,12 @@ export class programSpawnCreep {
         SpawnPoints.forEach(spawnPoint => {
             //Only spawn creeps if we're under current max value
             var creeps = _.filter(Game.creeps);
+            let spawnInProgress: boolean = false;
 
             if (creeps.length < (Game.spawns[spawnPoint].room.memory as RoomMemory).CurrentMaxCreeps) {
                 InitializedRoles.forEach(role => {
-                    if(role.NeedToSpawn(spawnPoint)){
+                    if (!spawnInProgress && role.NeedToSpawn(spawnPoint)) { //If a creep is already being spawned, don't try to spawn another right away
+                        spawnInProgress = true;
                         role.Spawn(spawnPoint);
                     }
                 });
@@ -28,7 +30,7 @@ export class programSpawnCreep {
                     );
                 }
             }
-            else{
+            else {
                 //console.log("Self Imposed Max Creep Limit is currently hit!  No new creeps will spawn!");
             }
         });
