@@ -1,5 +1,4 @@
 import { Roles } from "constants/enum.Roles";
-import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { PaverAttributes } from "attributes/class.PaverAttributes";
 import { actionRepairTower } from "actions/action.RepairTower";
@@ -8,15 +7,13 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { Mason } from "./controller.Mason";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
-import { actionSpawn } from "actions/action.Spawn";
 import { actionBuildRoad } from "actions/action.BuildRoad";
+import { BaseCreep } from "./controller.BaseCreep";
 
-export class Paver {
-    PaverAttributes: PaverAttributes = new PaverAttributes();
-
+export class Paver extends BaseCreep {
     constructor() {
+        super(Roles.Paver, 0, new PaverAttributes()); //Shouldn't always need a Paver
     }
 
     NeedToSpawn(spawnPoint: string) {
@@ -34,15 +31,6 @@ export class Paver {
         return false;
     }
 
-    Spawn(spawnPoint: string) {
-        var creepName = 'Paver_' + Game.time;
-
-        let creepMemory: CreepMemory = { Role: Roles.Paver, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
-
-        let spawn: actionSpawn = new actionSpawn();
-        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Paver, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver));
-    }
-
     Act(creep: Creep) {
         //Paver Actions Priority should be: Harvest / Build New Roads / Repair Roads / Repair Non-Road / Non-Wall Structures / Upgrade
         let harvest: actionHarvest = new actionHarvest();
@@ -56,7 +44,7 @@ export class Paver {
         if (harvest.IsNecessary(creep)) {
             harvest.Execute(creep);
         }
-        else if (buildRoad.IsNecessary(creep)){
+        else if (buildRoad.IsNecessary(creep)) {
             buildRoad.Execute(creep);
         }
         else if (repairRoad.IsNecessary(creep)) {
@@ -80,14 +68,11 @@ export class Paver {
     }
 
     private getCurrentPaversNeed(spawnPoint: string) {
-        let currentPaversNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Paver to be available.
-        let mason: Mason = new Mason();
+        let currentPaversNeed: number = this.baseRoleNeeded;
 
         //Don't build Pavers at the expense of not being able to do anything else
         //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Pavers.
-        if (CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver) == 0
-            || !mason.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason) > 0) {
-
+        if (!this.IsBlockedByCascadingRolesNeed(spawnPoint)) {
             let roadsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (constructionSite) => {
                     return constructionSite.structureType == STRUCTURE_ROAD

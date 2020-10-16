@@ -1,5 +1,4 @@
 import { Roles } from "constants/enum.Roles";
-import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { MasonAttributes } from "attributes/class.MasonAttributes";
 import { actionRepairTower } from "actions/action.RepairTower";
@@ -8,38 +7,17 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
-import { actionSpawn } from "actions/action.Spawn";
 import { actionBuildWall } from "actions/action.BuildWall";
+import { BaseCreep } from "./controller.BaseCreep";
 
-export class Mason {
-    MasonAttributes: MasonAttributes = new MasonAttributes();
-
+export class Mason extends BaseCreep {
     constructor() {
+        super(Roles.Mason, 0, new MasonAttributes()); //Don't always need a Mason
     }
 
     NeedToSpawn(spawnPoint: string) {
-        CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason); //Important for Room Memory updating!
-        let currentMasonWorth: number = CreepRoleFunctions.GetCurrentCreepWorthForRole(spawnPoint, Roles.Mason);
-        let currentMasonNeed: number = this.getCurrentMasonsNeed(spawnPoint);
-
-        //console.log("Current Mason Need: " + currentMasonNeed + " / Current Mason Worth: " + currentMasonWorth);
-        if (currentMasonNeed > currentMasonWorth) {
-            //console.log("A new Mason is needed!")
-            return true;
-        }
-
-        //console.log("No new Masons are necessary at this time")
-        return false;
-    }
-
-    Spawn(spawnPoint: string) {
-        var creepName = 'Mason_' + Game.time;
-
-        let creepMemory: CreepMemory = { Role: Roles.Mason, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
-
-        let spawn: actionSpawn = new actionSpawn();
-        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Mason, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason));
+        this.currentRoleNeeded = this.getCurrentMasonsNeed(spawnPoint); //Important, must set this for base NeedToSpawn class to work properly
+        return super.NeedToSpawn(spawnPoint); //Calls the inherited classes NeedToSpawn method (which is generic across roles)
     }
 
     Act(creep: Creep) {
@@ -55,7 +33,7 @@ export class Mason {
         if (harvest.IsNecessary(creep)) {
             harvest.Execute(creep);
         }
-        else if (buildWall.IsNecessary(creep)){
+        else if (buildWall.IsNecessary(creep)) {
             buildWall.Execute(creep);
         }
         else if (repairWall.IsNecessary(creep)) {
@@ -79,47 +57,48 @@ export class Mason {
     }
 
     private getCurrentMasonsNeed(spawnPoint: string) {
-        let currentMasonsNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a Mason to be available.
+        let currentMasonsNeed: number = this.baseRoleNeeded;
 
+        if (!this.IsBlockedByCascadingRolesNeed(spawnPoint)) {
+            let wallsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
+                filter: (constructionSite) => {
+                    return constructionSite.structureType == STRUCTURE_WALL
+                }
+            });
 
-        let wallsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
-            filter: (constructionSite) => {
-                return constructionSite.structureType == STRUCTURE_WALL
+            if (wallsNeedingToBeBuilt.length) {
+                currentMasonsNeed += Math.ceil(wallsNeedingToBeBuilt.length / 10);
             }
-        });
 
-        if (wallsNeedingToBeBuilt.length) {
-            currentMasonsNeed += Math.ceil(wallsNeedingToBeBuilt.length / 10);
-        }
+            let primaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_WALL && structure.hits <= 1000;
+                }
+            });
 
-        let primaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_WALL && structure.hits <= 1000;
+            if (primaryWallsNeedingRepair.length) {
+                currentMasonsNeed += Math.ceil(primaryWallsNeedingRepair.length / 2);
             }
-        });
 
-        if (primaryWallsNeedingRepair.length) {
-            currentMasonsNeed += Math.ceil(primaryWallsNeedingRepair.length / 2);
-        }
+            let secondaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_WALL && structure.hits > 1000 && structure.hits <= 100000;
+                }
+            });
 
-        let secondaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_WALL && structure.hits > 1000 && structure.hits <= 100000;
+            if (secondaryWallsNeedingRepair.length) {
+                currentMasonsNeed += Math.ceil(secondaryWallsNeedingRepair.length / 5);
             }
-        });
 
-        if (secondaryWallsNeedingRepair.length) {
-            currentMasonsNeed += Math.ceil(secondaryWallsNeedingRepair.length / 5);
-        }
+            let tertiaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return structure.structureType == STRUCTURE_WALL && structure.hits > 100000 && structure.hits < structure.hitsMax;
+                }
+            });
 
-        let tertiaryWallsNeedingRepair = Game.spawns[spawnPoint].room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_WALL && structure.hits > 100000 && structure.hits < structure.hitsMax;
+            if (tertiaryWallsNeedingRepair.length) {
+                currentMasonsNeed += Math.ceil(tertiaryWallsNeedingRepair.length / 20);
             }
-        });
-
-        if (tertiaryWallsNeedingRepair.length) {
-            currentMasonsNeed += Math.ceil(tertiaryWallsNeedingRepair.length / 20);
         }
 
         (Game.spawns[spawnPoint].room.memory as RoomMemory).Masons.CurrentCreepNeed = currentMasonsNeed;

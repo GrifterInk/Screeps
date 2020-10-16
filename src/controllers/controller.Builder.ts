@@ -1,5 +1,4 @@
 import { Roles } from "constants/enum.Roles";
-import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { actionHarvest } from "actions/action.Harvest";
 import { BuilderAttributes } from "attributes/class.BuilderAttributes";
 import { actionBuild } from "actions/action.Build";
@@ -9,40 +8,17 @@ import { actionRepairExtension } from "actions/action.RepairExtension";
 import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { Paver } from "./controller.Paver";
-import { Mason } from "./controller.Mason";
-import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
-import { actionSpawn } from "actions/action.Spawn";
 import { actionRepairRampart } from "actions/action.RepairRampart";
+import { BaseCreep } from "./controller.BaseCreep";
 
-export class Builder {
-    BuilderAttributes: BuilderAttributes = new BuilderAttributes();
-
+export class Builder extends BaseCreep {
     constructor() {
+        super(Roles.Builder, 0, new BuilderAttributes()); //Unlike Builders/Upgraders, don't always need a builder (hence 0)
     }
 
     NeedToSpawn(spawnPoint: string) {
-        CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder); //Important for Room Memory updating!
-        let currentBuilderWorth: number = CreepRoleFunctions.GetCurrentCreepWorthForRole(spawnPoint, Roles.Builder);
-        let currentBuilderNeed: number = this.getCurrentBuildersNeed(spawnPoint);
-
-        //console.log("Current Builder Need: " + currentBuilderNeed + " / Current Builder Worth: " + currentBuilderWorth);
-        if (currentBuilderNeed > currentBuilderWorth) {
-            //console.log("A new Builder is needed!")
-            return true;
-        }
-
-        //console.log("No new Builders are necessary at this time")
-        return false;
-    }
-
-    Spawn(spawnPoint: string) {
-        var creepName = 'Builder_' + Game.time;
-
-        let creepMemory: CreepMemory = { Role: Roles.Builder, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
-
-        let spawn: actionSpawn = new actionSpawn();
-        spawn.Execute(spawnPoint, creepName, creepMemory, Roles.Builder, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder));
+        this.currentRoleNeeded = this.getCurrentBuildersNeed(spawnPoint); //Important, must set this for base NeedToSpawn class to work properly
+        return super.NeedToSpawn(spawnPoint); //Calls the inherited classes NeedToSpawn method (which is generic across roles)
     }
 
     Act(creep: Creep) {
@@ -86,15 +62,11 @@ export class Builder {
     }
 
     private getCurrentBuildersNeed(spawnPoint: string) {
-        let currentBuilderNeed: number = 0;  //Unlike Butlers / Upgraders, I don't think we always need a builder to be available.
-        let paver: Paver = new Paver();
-        let mason: Mason = new Mason();
+        let currentBuilderNeed: number = this.baseRoleNeeded;
 
         //Don't build Builders at the expense of not being able to do anything else
         //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Builders
-        if (CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Builder) == 0
-            || !paver.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Paver) > 0
-            || !mason.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, Roles.Mason) > 0) {
+        if (!this.IsBlockedByCascadingRolesNeed(spawnPoint)) {
             let constructionSitesAdvanced = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (constructionSite) => {
                     return constructionSite.structureType != STRUCTURE_ROAD
