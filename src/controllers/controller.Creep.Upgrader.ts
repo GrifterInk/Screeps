@@ -4,7 +4,7 @@ import { Roles } from "constants/enum.Roles";
 import { actionHarvest } from "actions/action.Harvest";
 import { UpgraderAttributes } from "attributes/class.UpgraderAttributes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
-import { BaseCreep } from "./controller.BaseCreep";
+import { BaseCreep } from "./controller.Creep.BaseCreep";
 
 export class Upgrader extends BaseCreep {
     constructor() {

@@ -1,10 +1,10 @@
 import { CreepMemory } from "interfaces/interface.CreepMemory";
-import { Butler } from "controllers/controller.Butler";
+import { Butler } from "controllers/controller.Creep.Butler";
 import { Roles } from "constants/enum.Roles";
-import { Upgrader } from "controllers/controller.Upgrader";
-import { Builder } from "controllers/controller.Builder";
-import { Paver } from "controllers/controller.Paver";
-import { Mason } from "controllers/controller.Mason";
+import { Upgrader } from "controllers/controller.Creep.Upgrader";
+import { Builder } from "controllers/controller.Creep.Builder";
+import { Paver } from "controllers/controller.Creep.Paver";
+import { Mason } from "controllers/controller.Creep.Mason";
 
 export class programMapActions {
     constructor() {

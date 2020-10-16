@@ -9,7 +9,7 @@ import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { actionBuildRoad } from "actions/action.BuildRoad";
-import { BaseCreep } from "./controller.BaseCreep";
+import { BaseCreep } from "./controller.Creep.BaseCreep";
 
 export class Paver extends BaseCreep {
     constructor() {

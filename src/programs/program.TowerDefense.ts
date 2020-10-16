@@ -1,4 +1,4 @@
-import { Tower } from "controllers/controller.Tower";
+import { Tower } from "controllers/controller.Structure.Tower";
 import { SpawnPoints } from "constants/array.SpawnPoints";
 
 export class programTowerDefense {

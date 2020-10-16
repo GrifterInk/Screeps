@@ -2,8 +2,8 @@ import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { RoomGameStates } from "constants/enum.RoomGameStates";
 import { Roles } from "constants/enum.Roles";
 import { RoomMemoryRoleInformation } from "interfaces/interface.RoomMemoryRoleInformation";
-import { Butler } from "controllers/controller.Butler";
-import { Builder } from "controllers/controller.Builder";
+import { Butler } from "controllers/controller.Creep.Butler";
+import { Builder } from "controllers/controller.Creep.Builder";
 import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
 
 export class programInitializeRoomMemory {

@@ -9,7 +9,7 @@ import { actionRepairRoad } from "actions/action.RepairRoad";
 import { actionRepairWall } from "actions/action.RepairWall";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { actionRepairRampart } from "actions/action.RepairRampart";
-import { BaseCreep } from "./controller.BaseCreep";
+import { BaseCreep } from "./controller.Creep.BaseCreep";
 
 export class Builder extends BaseCreep {
     constructor() {

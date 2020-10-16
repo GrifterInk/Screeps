@@ -49,7 +49,7 @@ export class BaseCreep {
         if(CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, this.currentRole) > 0){ //If this role has 0 creeps, then it cannot be blocked by a lesser role that has no creeps
             InitializedRoles.forEach(cascadingRole => {
                 if(foundCurrent){
-                    if(cascadingRole.NeedToSpawn(spawnPoint) || CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, cascadingRole.currentRole) == 0){
+                    if(cascadingRole.NeedToSpawn(spawnPoint) && CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, cascadingRole.currentRole) == 0){
                         blockedByCascadingRoleNeed = true;
                     }
                 }

@@ -8,7 +8,7 @@ import { actionRepairWall } from "actions/action.RepairWall";
 import { actionUpgrade } from "actions/action.Upgrade";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { actionBuildWall } from "actions/action.BuildWall";
-import { BaseCreep } from "./controller.BaseCreep";
+import { BaseCreep } from "./controller.Creep.BaseCreep";
 
 export class Mason extends BaseCreep {
     constructor() {
