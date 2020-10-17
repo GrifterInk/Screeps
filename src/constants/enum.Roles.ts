@@ -4,6 +4,7 @@ export enum Roles {
     Paver = "Paver",
     Mason = "Mason",
     Upgrader = "Upgrader",
+    Planner = "Planner",
     Scout = "Scout",
     Paladin = "Paladin",
     Archer = "Archer",

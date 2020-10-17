@@ -36,7 +36,7 @@ export class BaseCreep {
     Spawn(spawnPoint: string) {
         var creepName = this.currentRole + "_" + Game.time;
 
-        let creepMemory: CreepMemory = { Role: this.currentRole, CurrentAction: "", CurrentEnergySource: -1, CurrentSize: undefined, CurrentWorth: undefined };
+        let creepMemory: CreepMemory = { Role: this.currentRole, CurrentAction: "", CurrentEnergySource: null, CurrentSize: undefined, CurrentWorth: undefined };
 
         let spawn: actionSpawn = new actionSpawn();
         spawn.Execute(spawnPoint, creepName, creepMemory, this.currentRole, CreepRoleFunctions.GetCurrentCreepCountForRole(spawnPoint, this.currentRole));

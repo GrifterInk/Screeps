@@ -8,7 +8,7 @@
 
 . Code Attack / Defense Actions and Roles
 
-. Code Bot Naming
+. Code Bot Naming / Role coloring???
 
 
 
