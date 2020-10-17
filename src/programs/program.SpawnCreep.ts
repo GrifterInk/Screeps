@@ -17,6 +17,7 @@ export class programSpawnCreep {
                 InitializedRoles.forEach(role => {
                     if (!spawnInProgress && role.NeedToSpawn(spawnPoint)) { //If a creep is already being spawned, don't try to spawn another right away
                         spawnInProgress = true;
+                        console.log
                         role.Spawn(spawnPoint);
                     }
                 });

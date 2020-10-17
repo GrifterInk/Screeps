@@ -10,6 +10,7 @@ import { MasonAttributes } from "attributes/class.MasonAttributes";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
+import { PlannerAttributes } from "attributes/class.Planner.Attributes";
 
 export class actionSpawn {
     constructor() {
@@ -148,6 +149,9 @@ export class actionSpawn {
 
         if (creepRole == Roles.Butler) {
             creepAttributes = new ButlerAttributes();
+        }
+        else if (creepRole == Roles.Planner){
+            creepAttributes = new PlannerAttributes();
         }
         else if (creepRole == Roles.Upgrader) {
             creepAttributes = new UpgraderAttributes();

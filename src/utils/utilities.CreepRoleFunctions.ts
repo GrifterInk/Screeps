@@ -22,6 +22,9 @@ export class CreepRoleFunctions {
             case Roles.Upgrader:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Upgraders.CurrentCreepCount = currentCreepsInRoleCount;
                 break;
+            case Roles.Planner:
+                (Game.spawns[spawnPoint].room.memory as RoomMemory).Planners.CurrentCreepCount = currentCreepsInRoleCount;
+                break;
             case Roles.Builder:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepCount = currentCreepsInRoleCount;
                 break;
@@ -53,6 +56,9 @@ export class CreepRoleFunctions {
                 break;
             case Roles.Upgrader:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Upgraders.CurrentCreepWorth = currentCreepsInRoleWorth;
+                break;
+            case Roles.Planner:
+                (Game.spawns[spawnPoint].room.memory as RoomMemory).Planners.CurrentCreepWorth = currentCreepsInRoleWorth;
                 break;
             case Roles.Builder:
                 (Game.spawns[spawnPoint].room.memory as RoomMemory).Builders.CurrentCreepWorth = currentCreepsInRoleWorth;

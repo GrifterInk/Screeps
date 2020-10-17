@@ -1,14 +1,14 @@
 import { actionSupplyEnergy } from "actions/action.SupplyEnergy";
-import { actionUpgrade } from "actions/action.Upgrade";
 import { Roles } from "constants/enum.Roles";
 import { actionHarvest } from "actions/action.Harvest";
-import { ButlerAttributes } from "attributes/class.ButlerAttributes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { BaseCreep } from "./controller.Creep.BaseCreep";
+import { actionPlanRoad } from "actions/action.PlanRoad";
+import { PlannerAttributes } from "attributes/class.Planner.Attributes";
 
 export class Planner extends BaseCreep {
     constructor(){
-        super(Roles.Planner, 1, new ButlerAttributes()) //We should always have a Planner (hence 1)
+        super(Roles.Planner, 1, new PlannerAttributes()) //We should always have a Planner (hence 1)
     }
 
     NeedToSpawn(spawnPoint: string) {
@@ -17,22 +17,24 @@ export class Planner extends BaseCreep {
     }
 
     Act(creep: Creep) {
-        //Butler Actions Priority should be: Plan Roads / Plan Defenses / Harvest / SupplyEnergy / Upgrade
+        //Planner Actions Priority should be: Plan Roads / Plan Defenses / Harvest / SupplyEnergy / Upgrade
+        let planRoad: actionPlanRoad = new actionPlanRoad();
         let supplyEnergy: actionSupplyEnergy = new actionSupplyEnergy();
         let harvest: actionHarvest = new actionHarvest();
 
         //TODO: Plan Roads/Defenses.
+        planRoad.Execute(creep);
 
-        if (harvest.IsNecessary(creep)) {
-            harvest.Execute(creep);
-        }
-        else if (supplyEnergy.IsNecessary(creep)) {
-            supplyEnergy.Execute(creep);
-        }
-        else {
-            let upgrade: actionUpgrade = new actionUpgrade();
-            upgrade.Execute(creep);
-        }
+        // if (harvest.IsNecessary(creep)) {
+        //     harvest.Execute(creep);
+        // }
+        // else if (supplyEnergy.IsNecessary(creep)) {
+        //     supplyEnergy.Execute(creep);
+        // }
+        // else {
+        //     let upgrade: actionUpgrade = new actionUpgrade();
+        //     upgrade.Execute(creep);
+        // }
     }
 
     private getCurrentPlannersNeed(spawnPoint: string) {
@@ -42,8 +44,9 @@ export class Planner extends BaseCreep {
             //I think we want 1 planner at all times, but probably only need 1 planner, so just stick with the baseRoleNeeded.
         }
 
-        (Game.spawns[spawnPoint].room.memory as RoomMemory).Butlers.CurrentCreepNeed = currentPlannerNeed;
+        (Game.spawns[spawnPoint].room.memory as RoomMemory).Planners.CurrentCreepNeed = currentPlannerNeed;
 
+        //console.log("Planers Needed: " + currentPlannerNeed);
         return currentPlannerNeed;
     }
 };

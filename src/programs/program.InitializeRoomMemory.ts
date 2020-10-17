@@ -30,6 +30,11 @@ export class programInitializeRoomMemory {
                     CurrentCreepNeed: 0,
                     CurrentCreepWorth: 0
                 };
+                (room.memory as RoomMemory).Planners = {
+                    CurrentCreepCount: 0,
+                    CurrentCreepNeed: 0,
+                    CurrentCreepWorth: 0
+                };
                 (room.memory as RoomMemory).Builders = {
                     CurrentCreepCount: 0,
                     CurrentCreepNeed: 0,

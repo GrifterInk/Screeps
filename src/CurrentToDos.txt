@@ -19,3 +19,7 @@ Memory.rooms.E54S42.CurrentEnergySource = [0];
 
 
  Memory.rooms.sim.CurrentMaxCreepSizeRank = 1;
+
+
+//COMMAND TO UPDATE "Main" in Screeps Game: (Run in Terminal from Screeps.Codebase root folder)
+npm run push-main

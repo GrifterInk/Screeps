@@ -14,6 +14,7 @@ export interface RoomMemory {
     CurrentMaxCreepSizeRank: CreepSizeRanks;
     CurrentMaxCreeps: number;
     Butlers: RoomMemoryRoleInformation;
+    Planners: RoomMemoryRoleInformation;
     Builders: RoomMemoryRoleInformation;
     Pavers: RoomMemoryRoleInformation;
     Masons: RoomMemoryRoleInformation;

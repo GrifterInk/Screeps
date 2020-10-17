@@ -27,9 +27,10 @@ export class actionPlanRoad {
 
                 if (path && path.length > 0) {
                     path.forEach(pos => {
-                        let room: Room = creep.room;
+                        let roomTerrain: RoomTerrain = creep.room.getTerrain();
 
-                        //room.Terrain();
+                        var posTerrain = roomTerrain.get(pos.x, pos.y);
+                        console.log(posTerrain + " = posTerrain");
                     });
                 }
             }

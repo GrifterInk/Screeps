@@ -5,6 +5,7 @@ import { Upgrader } from "controllers/controller.Creep.Upgrader";
 import { Builder } from "controllers/controller.Creep.Builder";
 import { Paver } from "controllers/controller.Creep.Paver";
 import { Mason } from "controllers/controller.Creep.Mason";
+import { Planner } from "controllers/controller.Creep.Planner";
 
 export class programMapActions {
     constructor() {
@@ -19,6 +20,10 @@ export class programMapActions {
                 butler.Act(creep);
             }
 
+            if ((creep.memory as CreepMemory).Role == Roles.Planner) {
+                let planner: Planner = new Planner();
+                planner.Act(creep);
+            }
             if ((creep.memory as CreepMemory).Role == Roles.Upgrader) {
                 let upgrader: Upgrader = new Upgrader();
                 upgrader.Act(creep);
