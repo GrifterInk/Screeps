@@ -25,6 +25,7 @@ export class programInitializeRoomMemory {
                 (room.memory as RoomMemory).CurrentMinCreepSizeRank = CreepSizeRanks.Mini;
                 (room.memory as RoomMemory).CurrentMaxCreepSizeRank = CreepSizeRanks.Mega;
                 (room.memory as RoomMemory).CurrentMaxCreeps = 25;
+                (room.memory as RoomMemory).RoomMap = [];
                 (room.memory as RoomMemory).Butlers = {
                     CurrentCreepCount: 0,
                     CurrentCreepNeed: 0,

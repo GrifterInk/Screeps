@@ -44,6 +44,7 @@ export class actionHarvest {
                 communicate.Execute(creep);
 
                 creep.moveTo(currentEnergySource, { visualizePathStyle: { stroke: PathStrokes.Harvest } });
+                creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road to the energy source while moving there.
             }
         }
     }

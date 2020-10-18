@@ -2,6 +2,7 @@ import { Roles } from "constants/enum.Roles";
 import { RoomGameStates } from "constants/enum.RoomGameStates";
 import { RoomMemoryRoleInformation } from "./interface.RoomMemoryRoleInformation";
 import { CreepSizeRanks } from "constants/enum.CreepSizeRanks";
+import { RoomPositionMapping } from "../attributes/class.RoomPositionMapping";
 
 //Example console command to adjusting RoomMemory manually:
 //Memory.rooms.[roomname].CurrentEnergySource = 0;
@@ -13,6 +14,7 @@ export interface RoomMemory {
     CurrentMinCreepSizeRank: CreepSizeRanks;
     CurrentMaxCreepSizeRank: CreepSizeRanks;
     CurrentMaxCreeps: number;
+    RoomMap: RoomPositionMapping[];
     Butlers: RoomMemoryRoleInformation;
     Planners: RoomMemoryRoleInformation;
     Builders: RoomMemoryRoleInformation;

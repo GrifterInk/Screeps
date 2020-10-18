@@ -26,6 +26,7 @@ export class actionSupplyEnergy {
                 communicate.Execute(creep);
 
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.SupplyEnergy } });
+                creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road to the structure while moving there.
             }
         }
     }

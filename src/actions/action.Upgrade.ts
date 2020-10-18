@@ -15,6 +15,7 @@ export class actionUpgrade {
             communicate.Execute(creep);
 
             creep.moveTo((creep.room as any).controller, { visualizePathStyle: { stroke: PathStrokes.Upgrade } });
+            creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road to the controller while moving there.
         }
     }
 };
