@@ -1,75 +1,27 @@
-import { PathStrokes } from "constants/enum.PathStrokes";
-import { CreepMemory } from "interfaces/interface.CreepMemory";
+import { PlanningFlag } from "attributes/class.PlanningFlag";
+import { RoomPositionMapping } from "attributes/class.RoomPositionMapping";
+import { PlanningFlags } from "constants/array.PlanningFlags";
+import { PlanningFlagTypes } from "constants/enum.PlanningFlagTypes";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { actionSetPlanningFlag } from "./action.SetPlanningFlag";
 
 export class actionPlanRoad {
     constructor() {
     }
 
     Execute(creep: Creep) {
-        var startingPoints = this.goToSpawnStart(creep);
+        let setRoadFlag: actionSetPlanningFlag = new actionSetPlanningFlag();
 
-        var currentAction = (creep.memory as CreepMemory).CurrentAction;
+        if (setRoadFlag.IsNecessary(creep, null)) {
+            setRoadFlag.Execute(creep, PlanningFlagTypes.Road);
+            //creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road at the current position of the Creep
 
-        if ((currentAction == "Return to SpawnPoint" || !currentAction) && startingPoints && startingPoints.length > 0) {
-            //console.log("Planner moving back to Spawn Point: " + startingPoints);
-            creep.moveTo(startingPoints[0], { visualizePathStyle: { stroke: PathStrokes.SupplyEnergy } });
-            creep.pos.createConstructionSite(STRUCTURE_ROAD);
+            //Now, update the Room Map so it's up to date.
+            let posMapping: RoomPositionMapping | undefined = (creep.room.memory as RoomMemory).RoomMap.find(coord => coord.X == creep.pos.x && coord.Y == creep.pos.y);
 
-            var spawnX = startingPoints[0].pos.x;
-            var spawnY = startingPoints[0].pos.y;
-            var creepX = creep.pos.x;
-            var creepY = creep.pos.y;
-
-            //console.log("Spawn Pos: " + spawnX + " / " + spawnY + " | Creep Pos: " + creepX + " / " + creepY);
-            if ((spawnX - creepX >= -1 && spawnX - creepX <= 1) && (spawnY - creepY >= -1 && spawnY - creepY <= 1)) {
-                (creep.memory as CreepMemory).CurrentAction = "Travel to Energy Source"
+            if (posMapping) {
+                posMapping.CurrentOccupancy = "constructionSite";
             }
         }
-        else {
-            //Find a different origin point.
-        }
-
-        if (currentAction == "Travel to Energy Source") {
-            let energySource: Source | undefined = this.findPathToEnergySource(creep);
-
-            if (energySource) {
-                creep.moveTo(energySource, { visualizePathStyle: { stroke: PathStrokes.SupplyEnergy } });
-                creep.pos.createConstructionSite(STRUCTURE_ROAD);
-
-                var sourceX = energySource.pos.x;
-                var sourceY = energySource.pos.y;
-                var creepX = creep.pos.x;
-                var creepY = creep.pos.y;
-
-                //console.log("Source Pos: " + sourceX + " / " + sourceY + " | Creep Pos: " + creepX + " / " + creepY);
-                if ((sourceX - creepX >= -1 && sourceX - creepX <= 1) && (sourceY - creepY >= -1 && sourceY - creepY <= 1)) {
-                    (creep.memory as CreepMemory).CurrentAction = "Return to SpawnPoint"
-                }
-            }
-        }
-    }
-
-    private goToSpawnStart(creep: Creep) {
-        var spawnPointStructureTarget = creep.room.find(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return structure.structureType == STRUCTURE_SPAWN
-                    && structure.energy < structure.energyCapacity;
-            }
-        });
-        if (spawnPointStructureTarget.length) {
-            return spawnPointStructureTarget;
-        }
-
-        return undefined;
-    }
-
-    private findPathToEnergySource(creep: Creep) {
-        var sources = creep.room.find(FIND_SOURCES_ACTIVE);
-
-        if (sources && sources.length > 0) {
-            return sources[0]; //TODO: Have to figure out how to handle all the sources
-        }
-
-        return undefined;
     }
 }

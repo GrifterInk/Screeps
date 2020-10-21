@@ -10,7 +10,6 @@ export class programMapRoom {
     }
 
     Run() {
-
         for (var roomName in Game.rooms) {//Loop through my rooms
             var room = Game.rooms[roomName];
             let roomMap: RoomPositionMapping[] = [];

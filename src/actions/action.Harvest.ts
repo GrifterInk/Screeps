@@ -4,6 +4,7 @@ import { PathStrokes } from "constants/enum.PathStrokes";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { arrayFunctions } from "utils/utilities.ArrayFunctions";
 import { actionCommunicate } from "./action.Communicate";
+import { actionPlanRoad } from "./action.PlanRoad";
 
 export class actionHarvest {
     constructor() {
@@ -44,7 +45,8 @@ export class actionHarvest {
                 communicate.Execute(creep);
 
                 creep.moveTo(currentEnergySource, { visualizePathStyle: { stroke: PathStrokes.Harvest } });
-                creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road to the energy source while moving there.
+                let planRoad: actionPlanRoad = new actionPlanRoad();
+                planRoad.Execute(creep); //Plan road for the path to the source.
             }
         }
     }

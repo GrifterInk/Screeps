@@ -10,6 +10,8 @@ import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { CreepRoleFunctions } from "utils/utilities.CreepRoleFunctions";
 import { actionBuildRoad } from "actions/action.BuildRoad";
 import { BaseCreep } from "./controller.Creep.BaseCreep";
+import { actionFindPlanningFlag } from "actions/action.FindPlanningFlag";
+import { PlanningFlagTypes } from "constants/enum.PlanningFlagTypes";
 
 export class Paver extends BaseCreep {
     constructor() {
@@ -70,9 +72,14 @@ export class Paver extends BaseCreep {
     private getCurrentPaversNeed(spawnPoint: string) {
         let currentPaversNeed: number = this.baseRoleNeeded;
 
-        //Don't build Pavers at the expense of not being able to do anything else
-        //so adding some logic to make sure that we have at least 1 bot of other roles that are needed but have less priority than Pavers.
         if (!this.IsBlockedByCascadingRolesNeed(spawnPoint)) {
+            let roadFlags: actionFindPlanningFlag = new actionFindPlanningFlag();
+            let roadsNeedingToBePlanned: Flag[] = roadFlags.Execute(Game.spawns[spawnPoint].room, PlanningFlagTypes.Road);
+
+            if(roadsNeedingToBePlanned && roadsNeedingToBePlanned.length){
+                currentPaversNeed += Math.ceil(roadsNeedingToBePlanned.length / 2);
+            }
+
             let roadsNeedingToBeBuilt = Game.spawns[spawnPoint].room.find(FIND_CONSTRUCTION_SITES, {
                 filter: (constructionSite) => {
                     return constructionSite.structureType == STRUCTURE_ROAD
@@ -89,9 +96,9 @@ export class Paver extends BaseCreep {
                 }
             });
 
-            //We're going to say we need 1 paver for every 10 roads that need repairing.
+            //We're going to say we need 1 paver for every 50 roads that need repairing.
             if (roadsNeedingRepair.length) {
-                currentPaversNeed += Math.ceil(roadsNeedingRepair.length / 20);
+                currentPaversNeed += Math.ceil(roadsNeedingRepair.length / 50);
             }
         }
 

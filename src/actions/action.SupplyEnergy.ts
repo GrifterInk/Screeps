@@ -2,6 +2,7 @@ import { CreepMemory } from "interfaces/interface.CreepMemory";
 import { Actions } from "constants/enum.Actions";
 import { PathStrokes } from "constants/enum.PathStrokes";
 import { actionCommunicate } from "./action.Communicate";
+import { actionPlanRoad } from "./action.PlanRoad";
 
 export class actionSupplyEnergy {
     constructor() {
@@ -26,7 +27,8 @@ export class actionSupplyEnergy {
                 communicate.Execute(creep);
 
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.SupplyEnergy } });
-                creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road to the structure while moving there.
+                let planRoad: actionPlanRoad = new actionPlanRoad();
+                planRoad.Execute(creep); //Plan road for the path to the structure.
             }
         }
     }
