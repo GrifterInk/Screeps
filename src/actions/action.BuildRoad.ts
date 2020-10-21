@@ -4,6 +4,8 @@ import { PathStrokes } from "constants/enum.PathStrokes";
 import { actionCommunicate } from "./action.Communicate";
 import { actionFindPlanningFlag } from "./action.FindPlanningFlag";
 import { PlanningFlagTypes } from "constants/enum.PlanningFlagTypes";
+import { RoomMemory } from "interfaces/interface.RoomMemory";
+import { RoomPositionMapping } from "attributes/class.RoomPositionMapping";
 
 export class actionBuildRoad {
     constructor() {
@@ -48,6 +50,14 @@ export class actionBuildRoad {
                 communicate.Execute(creep);
 
                 creep.moveTo(targets[0], { visualizePathStyle: { stroke: PathStrokes.Build } });
+            }
+            else if (creep.build(targets[0]) == OK) {
+                //Update RoomMap
+                let posMap: RoomPositionMapping | undefined = (creep.room.memory as RoomMemory).RoomMap.find(coord => targets != undefined && coord.X == targets[0].pos.x && coord.Y == targets[0].pos.y);
+
+                if (posMap) {
+                    posMap.CurrentOccupancy = STRUCTURE_ROAD;
+                }
             }
         }
         else {
