@@ -3,8 +3,9 @@ import { Roles } from "constants/enum.Roles";
 import { actionHarvest } from "actions/action.Harvest";
 import { RoomMemory } from "interfaces/interface.RoomMemory";
 import { BaseCreep } from "./controller.Creep.BaseCreep";
-import { actionPlanRoad } from "actions/action.PlanRoad";
 import { PlannerAttributes } from "attributes/class.Planner.Attributes";
+import { actionPlanExtension } from "actions/action.PlanExtension";
+import { actionUpgrade } from "actions/action.Upgrade";
 
 export class Planner extends BaseCreep {
     constructor(){
@@ -17,24 +18,26 @@ export class Planner extends BaseCreep {
     }
 
     Act(creep: Creep) {
-        //Planner Actions Priority should be: Plan Roads / Plan Defenses / Harvest / SupplyEnergy / Upgrade
-        let planRoad: actionPlanRoad = new actionPlanRoad();
+        //Planner Actions Priority should be: Plan Extensions / Plan Defenses / Harvest / SupplyEnergy / Upgrade
+        let planExtension: actionPlanExtension = new actionPlanExtension();
         let supplyEnergy: actionSupplyEnergy = new actionSupplyEnergy();
         let harvest: actionHarvest = new actionHarvest();
 
         //TODO: Plan Roads/Defenses.
-        planRoad.Execute(creep);
+        if(planExtension.IsNecessary(creep)){
+            planExtension.Exectute(creep);
+        }
 
-        // if (harvest.IsNecessary(creep)) {
-        //     harvest.Execute(creep);
-        // }
-        // else if (supplyEnergy.IsNecessary(creep)) {
-        //     supplyEnergy.Execute(creep);
-        // }
-        // else {
-        //     let upgrade: actionUpgrade = new actionUpgrade();
-        //     upgrade.Execute(creep);
-        // }
+        if (harvest.IsNecessary(creep)) {
+            harvest.Execute(creep);
+        }
+        else if (supplyEnergy.IsNecessary(creep)) {
+            supplyEnergy.Execute(creep);
+        }
+        else {
+            let upgrade: actionUpgrade = new actionUpgrade();
+            upgrade.Execute(creep);
+        }
     }
 
     private getCurrentPlannersNeed(spawnPoint: string) {

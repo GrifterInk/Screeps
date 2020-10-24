@@ -12,8 +12,8 @@ export class actionPlanRoad {
     Execute(creep: Creep) {
         let setRoadFlag: actionSetPlanningFlag = new actionSetPlanningFlag();
 
-        if (setRoadFlag.IsNecessary(creep, null)) {
-            setRoadFlag.Execute(creep, PlanningFlagTypes.Road);
+        if (setRoadFlag.IsNecessary(creep.room, creep.pos, null)) {
+            setRoadFlag.Execute(creep.pos, PlanningFlagTypes.Road);
             //creep.pos.createConstructionSite(STRUCTURE_ROAD); //Plan a road at the current position of the Creep
 
             //Now, update the Room Map so it's up to date.

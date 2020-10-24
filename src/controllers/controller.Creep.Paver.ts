@@ -96,9 +96,9 @@ export class Paver extends BaseCreep {
                 }
             });
 
-            //We're going to say we need 1 paver for every 50 roads that need repairing.
+            //We're going to say we need 1 paver for every 30 roads that need repairing.
             if (roadsNeedingRepair.length) {
-                currentPaversNeed += Math.ceil(roadsNeedingRepair.length / 50);
+                currentPaversNeed += Math.ceil(roadsNeedingRepair.length / 30);
             }
         }
 

@@ -6,19 +6,19 @@ export class actionSetPlanningFlag {
     constructor() {
     }
 
-    IsNecessary(creep: Creep, flagType: PlanningFlagTypes | null) {
+    IsNecessary(room: Room, pos: RoomPosition, flagType: PlanningFlagTypes | null) {
         let isNecessary: boolean = true;
         let planningFlag: PlanningFlag | undefined = PlanningFlags.find(pf => pf.FlagType == flagType);
 
         //Don't put flags on top of other flags (either any flag, or flags of the same type depending on input)
-        let existingFlags = creep.room.find(FIND_FLAGS, {
+        let existingFlags = room.find(FIND_FLAGS, {
             filter: function (flag) {
-                if (flag.room == creep.room && flag.pos.x == creep.pos.x && flag.pos.y == creep.pos.y && !flagType) { //Existing Flag Type Independent
+                if (flag.room == room && flag.pos.x == pos.x && flag.pos.y == pos.y && !flagType) { //Existing Flag Type Independent
                     //console.log("Found Flag in room " + creep.room + " at " + creep.pos.x + " / " + creep.pos.y);
 
                     return true;
                 }
-                else if (flag.room == creep.room && flag.pos.x == creep.pos.x && flag.pos.y == creep.pos.y && flagType && planningFlag && flag.color == planningFlag.PrimaryColor && flag.secondaryColor == planningFlag.SecondaryColor) { //Don't set a flag only if flag of same type already exists
+                else if (flag.room == room && flag.pos.x == pos.x && flag.pos.y == pos.y && flagType && planningFlag && flag.color == planningFlag.PrimaryColor && flag.secondaryColor == planningFlag.SecondaryColor) { //Don't set a flag only if flag of same type already exists
                     //console.log("Found " + flagType + "Flag in room " + creep.room + " at " + creep.pos.x + " / " + creep.pos.y);
                     return true;
                 }
@@ -32,9 +32,9 @@ export class actionSetPlanningFlag {
         }
 
         //Don't put flags (of any type) on Roads or construction sites!
-        let existingRoads = creep.room.find(FIND_STRUCTURES, {
+        let existingRoads = room.find(FIND_STRUCTURES, {
             filter: function (structure) {
-                if (structure.structureType == STRUCTURE_ROAD && structure.room == creep.room && structure.pos.x == creep.pos.x && structure.pos.y == creep.pos.y) {
+                if (structure.structureType == STRUCTURE_ROAD && structure.room == room && structure.pos.x == pos.x && structure.pos.y == pos.y) {
                     return true;
                 }
 
@@ -46,9 +46,9 @@ export class actionSetPlanningFlag {
             isNecessary = false;
         }
 
-        let existingConstructionSites = creep.room.find(FIND_CONSTRUCTION_SITES, {
+        let existingConstructionSites = room.find(FIND_CONSTRUCTION_SITES, {
             filter: function (constructionSite){
-                if(constructionSite.room == creep.room && constructionSite.pos.x == creep.pos.x && constructionSite.pos.y == creep.pos.y){
+                if(constructionSite.room == room && constructionSite.pos.x == pos.x && constructionSite.pos.y == pos.y){
                     return true;
                 }
 
@@ -63,13 +63,13 @@ export class actionSetPlanningFlag {
         return isNecessary;
     }
 
-    Execute(creep: Creep, flagType: PlanningFlagTypes) {
+    Execute(pos: RoomPosition, flagType: PlanningFlagTypes) {
         let planningFlag: PlanningFlag | undefined = PlanningFlags.find(pf => pf.FlagType == flagType);
 
         if (planningFlag) {
             let flagName: string = flagType + "_" + Game.time;
 
-            creep.pos.createFlag(flagName, planningFlag.PrimaryColor, planningFlag.SecondaryColor);
+            pos.createFlag(flagName, planningFlag.PrimaryColor, planningFlag.SecondaryColor);
         }
     }
 }

@@ -1,9 +1,7 @@
-. Update plan Road to use flags.  (Probably have to update logic for Pavers to be based on flags and not road const. sites?) -> Flags don't have 100 limit, and won't die if an opposing screep runs over them (apparently)
-        Be sure to use a specific  color to indicate it's a road flag.  Then we can use other color flags for diff. structures.
-
 -> Extensions / Walls available at Controller Level 2.  Should try to have planner set up early extensions near spawner.
+-> Planners always mini?  No real reason for them to be large....
 
-. Consider a "Planner" role that prioritizes creating construction sites (Roads/Towers/Walls/etc.)
+. Masons seem to get stuck when walls are all 1m?
 
 . Make code more efficient - things like saving paths and reusing them
 
