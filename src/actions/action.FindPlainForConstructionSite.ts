@@ -63,27 +63,33 @@ export class actionFindPlainForConstructionSite {
         //     && rm.CurrentOccupancy == "plain"
         // )
 
+        let bufferXMin: number = targetPosition.x - bufferSpaces;
+        let bufferXMax: number = targetPosition.x + bufferSpaces;
+        let bufferYMin: number = targetPosition.y - bufferSpaces;
+        let bufferYMax: number = targetPosition.y + bufferSpaces;
+
+
         let nearbyPositions = roomMap.filter(rm => rm.X && rm.Y
             && (rm.X >= targetPosition.x - searchRadius && rm.X <= targetPosition.x + searchRadius)
             && (rm.Y >= targetPosition.y - searchRadius && rm.Y <= targetPosition.y + searchRadius)
-            && (rm.X - targetPosition.x >= bufferSpaces || rm.X - targetPosition.x <= bufferSpaces * -1)
-            && (rm.Y - targetPosition.y >= bufferSpaces || rm.Y - targetPosition.y <= bufferSpaces * -1)
+            && (
+                (rm.X <= bufferXMin || rm.X >= bufferXMax)
+                || (rm.Y <= bufferYMin || rm.Y >= bufferYMax)
+            )
             && rm.CurrentOccupancy == "plain"
         )
 
-
-
         if (nearbyPositions && nearbyPositions.length) {
             //Favor positions that are vertical/horizontal before going diagonal.
-            let returnPos: RoomPositionMapping | undefined = nearbyPositions.find(p => p.Y == targetPosition.y);
+            let returnPos: RoomPositionMapping | undefined = nearbyPositions.find(p => p.X == targetPosition.x);
             if (returnPos) {
                 console.log("Found Vertical Position for Construction Site!");
                 return returnPos;
             }
 
-            returnPos = nearbyPositions.find(p => p.X == targetPosition.x);
+            returnPos = nearbyPositions.find(p => p.Y == targetPosition.y);
             if (returnPos) {
-                console.log("Found Horizontal Position for Construction Site!");
+                console.log("Found Horizaontal Position for Construction Site!");
                 return returnPos;
             }
 
